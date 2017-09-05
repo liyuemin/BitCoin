@@ -141,8 +141,8 @@
         path.lineWidth = 1.0;
         UIColor * color = [UIColor greenColor];
         [color set];
-        [path moveToPoint:[self getLinePoint:[self.dataArray objectAtIndex:0]]];
-        for (int i = 1 ; i < self.dataArray.count ; i++){
+        [path moveToPoint:[self getLinePoint:[self.dataArray lastObject]]];
+        for (NSInteger i = self.dataArray.count - 2 ; i > 0  ; i--){
             [path addLineToPoint:[self getLinePoint:[self.dataArray objectAtIndex:i]]];
         }
         
@@ -233,14 +233,14 @@
     CGFloat timeX = [[pointData valueForKey:@"create_time"] floatValue];
     CGFloat pointX = 20 + (timeX - _minPointX)/(_maxPointX - _minPointX) *(self.frame.size.width - 80);
     CGFloat priceY = [[pointData valueForKey:@"btc_price"] floatValue];
-    CGFloat pointY =20 + (priceY - _minPointY)/(_maxPointY - _minPointY) *(self.frame.size.height - 40);
+    CGFloat pointY =(self.frame.size.height - 40) - ((priceY - _minPointY)/(_maxPointY - _minPointY) *(self.frame.size.height - 40)) + 20;
     
     return CGPointMake(pointX, pointY);
 }
 
 - (CGFloat)getLineX:(NSDictionary *)pointData{
     CGFloat timeX = [[pointData valueForKey:@"create_time"] floatValue];
-    CGFloat pointX = (_maxPointX - timeX)/(_maxPointX - _minPointX) *(self.frame.size.width - 60);
+    CGFloat pointX =  (_maxPointX - timeX)/(_maxPointX - _minPointX) *(self.frame.size.width - 60);
     
     return pointX;
     

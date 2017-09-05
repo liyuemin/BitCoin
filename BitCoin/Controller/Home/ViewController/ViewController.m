@@ -113,6 +113,8 @@
         [self.requstTimeData setObject:[NSDate date] forKey:type];
         
         [self.homeViewModel requesBitHomeList:@[[NSString getDeviceIDInKeychain],type,@"1"] withKey:type net:YES];
+    } else {
+        [self endRefreshing:type];
     }
 }
 

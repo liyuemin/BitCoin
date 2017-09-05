@@ -112,7 +112,7 @@
     [self.desLable setText:entity.btc_trade_from_name];
     [self upConstraintViews];
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
-    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising_val floatValue]] forState:UIControlStateNormal];
+    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising_val floatValue]/100.0] forState:UIControlStateNormal];
     if ([entity.rising_val floatValue] > 0){
         [self.preButton setBackgroundColor:k_D0402D];
         [self.moneyLabel setTextColor:k_D0402D];
@@ -128,7 +128,7 @@
     [self.desLable setText:entity.btc_trade_from_name];
     [self upConstraintViews];
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
-    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising_val floatValue]] forState:UIControlStateNormal];
+    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising_val floatValue]/100.0] forState:UIControlStateNormal];
     if ([entity.rising_val floatValue] > 0){
         [self.preButton setBackgroundColor:k_D0402D];
         [self.moneyLabel setTextColor:k_D0402D];

@@ -27,6 +27,7 @@
     [self.view addSubview:self.listView];
     [self setViewModelCallBack];
     [self requesMessage:1];
+    [self.view addSubview:self.loadingView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,6 +49,7 @@
             return;
         }
         [self.HUD hideAnimated:YES];
+        [self.listView.mj_header endRefreshing];
         if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitMessage_Code].location != NSNotFound){
             self.listArray = [BitMessageEntity mj_objectArrayWithKeyValuesArray:returnParam];
             if (self.listArray.count > 0){
@@ -64,8 +66,10 @@
             return;
         }
         [self.HUD hideAnimated:YES];
+        [self.listView.mj_header endRefreshing];
         if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitMessage_Code].location != NSNotFound){
             [self setLoadingType];
+            
         }
     } WithFailureBlock:^(id retrunParam, id extroInfo) {
         @strongify(self)
@@ -74,6 +78,7 @@
             return;
         }
         [self.HUD hideAnimated:YES];
+        [self.listView.mj_header endRefreshing];
         [self showAlertToast:@"请求网络失败"];
     }];
 
