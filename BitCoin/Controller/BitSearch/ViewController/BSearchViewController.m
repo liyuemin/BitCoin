@@ -85,6 +85,11 @@
 
 }
 
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.followBlock = nil;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -129,6 +134,7 @@
             if (entity){
                 [entity setIs_follow:YES];
             }
+            self.followBlock(YES);
             [self showAlertToast:@"关注成功"];
             [self.listView reloadData];
         }
@@ -286,6 +292,11 @@
 
 - ( BOOL )textField:( UITextField  *)textField shouldChangeCharactersInRange:(NSRange )range replacementString:( NSString  *)string {
     [self searchBitKeyWork:textField.text];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+   [textField resignFirstResponder];
     return YES;
 }
 

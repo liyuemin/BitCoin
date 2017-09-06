@@ -7,6 +7,8 @@
 //
 
 #import "BaseViewController.h"
+typedef void (^SearchFollowResult) (BOOL result);
 
 @interface BSearchViewController : BaseViewController
+@property (nonatomic ,copy)SearchFollowResult followBlock;
 @end

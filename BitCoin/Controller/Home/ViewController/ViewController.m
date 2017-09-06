@@ -103,26 +103,30 @@
     [self.homeViewModel requestBitClassInfoListWithNet:YES];
 }
 
-- (void)requestBitType:(NSString *)type page:(int)page withLoad:(BOOL)load{
+- (void)requestBitType:(NSString *)type page:(int)page withLoad:(BOOL)load withRefrensh:(BOOL)refresh{
     NSDate *oldDate = [self.requstTimeData objectForKey:type];
     NSDate *date = [NSDate date];
-    if ([date second] - [oldDate second] > 5){
+    if (refresh){
         if (load){
             [self.HUD showAnimated:YES];
         }
         [self.requstTimeData setObject:[NSDate date] forKey:type];
-        
         [self.homeViewModel requesBitHomeList:@[[NSString getDeviceIDInKeychain],type,@"1"] withKey:type net:YES];
+
     } else {
-        [self endRefreshing:type];
+        if (labs([date second] - [oldDate second]) > 5){
+            if (load){
+                [self.HUD showAnimated:YES];
+            }
+            [self.requstTimeData setObject:[NSDate date] forKey:type];
+            [self.homeViewModel requesBitHomeList:@[[NSString getDeviceIDInKeychain],type,@"1"] withKey:type net:YES];
+        } else {
+            [self endRefreshing:type];
+        }
     }
 }
 
-- (void)headerWithRefreshing{
-    NSInteger index = (long)self.segmentedControl.selectedSegmentIndex;
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:YES];
-  
-}
+
 
 - (void)endRefreshing:(NSString *)key{
     NSInteger dataIndex = NSNotFound;
@@ -157,7 +161,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.bitClassData.count > 0){
-                [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:self.segmentedControl.selectedSegmentIndex] val] page:1 withLoad:NO];
+                [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:self.segmentedControl.selectedSegmentIndex] val] page:1 withLoad:NO withRefrensh:NO];
             }
         });
         
@@ -236,6 +240,15 @@
 - (void)searchBit:(id)sender {
     BSearchViewController *searchVc = [[BSearchViewController alloc] init];
     [searchVc setHaveMyNavBar:YES];
+    __weak  ViewController *wself = self;
+    [searchVc setFollowBlock:^(BOOL reslut){
+        if (reslut){
+            if (self.bitClassData.count > 0){
+                [wself requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:0] val] page:1 withLoad:NO withRefrensh:YES];
+            }
+           
+        }
+    }];
     [self.navigationController pushViewController:searchVc animated:YES];
 
 }
@@ -277,7 +290,7 @@
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
     BHomeCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     [cell beginRefreshing];
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:YES];
+    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:YES withRefrensh:NO];
     
 }
 
@@ -288,10 +301,13 @@
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
     CGFloat pageWidth = scrollView.frame.size.width;
     NSInteger page = scrollView.contentOffset.y / pageWidth;
-    
-    [self.segmentedControl setSelectedSegmentIndex:page animated:YES];
+    if(page != self.segmentedControl.selectedSegmentIndex){
+        [self.segmentedControl setSelectedSegmentIndex:page animated:YES];
+        [self segmentedControlChangedValue:self.segmentedControl];
+    }
 }
 
 - (void)didSelectIndexData:(BitEnity *)entity {
@@ -304,7 +320,7 @@
 
 - (void)refreshingData:(BHomeCell *)homecell {
     NSIndexPath *path = [self.tableView indexPathForCell:homecell];
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val] page:1 withLoad:YES];
+    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val] page:1 withLoad:YES withRefrensh:YES];
 }
 
 - (void)addBitFollow{
