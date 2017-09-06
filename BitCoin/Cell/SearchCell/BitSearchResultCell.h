@@ -11,7 +11,7 @@
 @protocol BitSearchResultCellDelegate;
 @interface BitSearchResultCell : UITableViewCell
 @property (nonatomic ,unsafe_unretained)id <BitSearchResultCellDelegate>delegate;
-- (void)setCellData:(BitSearchResultEntity *)entity withkey:(NSString *)key withfollow:(BOOL)follow;
+- (void)setCellData:(BitSearchResultEntity *)entity withkey:(NSString *)key;
 @end
 
 @protocol BitSearchResultCellDelegate <NSObject>

@@ -55,9 +55,19 @@
     }];
 }
 
-- (void)setBitLineData:(NSArray *)array {
-
-    [self.lineChart setDataArray:array];
+- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key {
+    if(array && array.count > 0){
+        if ([key isEqualToString:@"minute"]){
+            [self.lineChart setTimeType:BitLineTimeTypeMinutes];
+        }else if ([key isEqualToString:@"hour"]){
+            [self.lineChart setTimeType:BitLineTimeTypeHours];
+        }else if ([key isEqualToString:@"day"]){
+            [self.lineChart setTimeType:BitLineTimeTypeDays];
+        }else if ([key isEqualToString:@"month"]){
+            [self.lineChart setTimeType:BitLineTimeTypeMonth];
+        }
+        [self.lineChart setDataArray:array];
+    }
 }
 
 - (void)didClicksegmentedControlAction:(UISegmentedControl *)segment{

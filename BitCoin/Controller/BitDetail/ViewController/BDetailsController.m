@@ -20,9 +20,10 @@
 @interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitLineChartCellDelegate>
 @property (nonatomic ,strong)BitDetailsViewModel *detailsViewModel;
 @property (nonatomic ,strong)BitDetailsEntity*detailsEntity;
-@property (nonatomic ,strong)NSArray *pricArray;
+@property (nonatomic ,strong)NSMutableDictionary *pricData;
 @property (nonatomic ,strong)UITableView *listView;
 @property (nonatomic ,strong)NSMutableArray *webArray;
+@property (nonatomic ,copy)NSString *requestKey;
 @end
 
 @implementation BDetailsController
@@ -34,6 +35,7 @@
     [self setUpViews];
     [self setViewModelBlock];
     [self requestDeltailsBitId:self.bitId];
+    self.requestKey = @"minute";
     [self requesPricebitId:self.bitId withtype:@"minute"];
 
 }
@@ -76,9 +78,16 @@
               //self.pricArray = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam[@"m_price"]];
               [self.listView reloadData];
           } else if ([[extroInfo valueForKey:API_BitPrice_Code] rangeOfString:API_BitPrice_Code].location != NSNotFound){
-              self.pricArray = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam];
-              NSLog(@"%@",self.pricArray);
-              [self.listView reloadData];
+              NSString *key = [extroInfo valueForKey:API_Back_ExtroInfo];
+              if ([self.requestKey isEqualToString:key]){
+                  if ([self.pricData allKeys].count > 0){
+                      [self.pricData removeAllObjects];
+                  }
+                  NSArray *array  = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam];
+                  [self.pricData setObject:array forKey:key];
+                  [self.listView reloadData];
+              }
+
           }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
         @strongify(self)
@@ -126,7 +135,7 @@
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             [cell setDelegate:self];
         }
-        [cell setBitLineData:self.pricArray];
+        [cell setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey];
         return cell;
         
     }else if (indexPath.row == 2){
@@ -187,6 +196,7 @@
 }
 
 - (void)selectSegmentIndex:(NSInteger)index withKey:(NSString *)key {
+    self.requestKey = [key copy];
     [self requesPricebitId:self.bitId withtype:key];
 }
 
@@ -198,11 +208,11 @@
     return _detailsViewModel;
 }
 
-- (NSArray *)pricArray {
-    if (!_pricArray){
-        _pricArray = [[NSArray alloc] init];
+- (NSMutableDictionary *)pricData {
+    if (!_pricData){
+        _pricData = [[NSMutableDictionary alloc] init];
     }
-    return _pricArray;
+    return _pricData;
 }
 
 

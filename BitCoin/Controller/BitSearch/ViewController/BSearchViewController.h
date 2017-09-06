@@ -9,5 +9,4 @@
 #import "BaseViewController.h"
 
 @interface BSearchViewController : BaseViewController
-@property (nonatomic ,strong)NSMutableArray *followArray;
 @end

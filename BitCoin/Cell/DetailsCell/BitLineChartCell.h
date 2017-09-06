@@ -13,7 +13,7 @@
 
 @interface BitLineChartCell : UITableViewCell
 @property (nonatomic ,unsafe_unretained)id <BitLineChartCellDelegate> delegate;
-- (void)setBitLineData:(NSArray *)array;
+- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key;
 @end
 
 @protocol BitLineChartCellDelegate <NSObject>

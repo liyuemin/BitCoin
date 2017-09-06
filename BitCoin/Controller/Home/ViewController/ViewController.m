@@ -52,7 +52,7 @@
     [button setTitleColor:k_FAFAFA forState:UIControlStateNormal];
     [button.titleLabel setFont:SYS_FONT(18)];
     [button sizeToFit];
-    [button setCenter:self.navBar.center];
+    [button setCenter:CGPointMake(self.navBar.center.x, self.navBar.center.y + 8)];
     //[titleView addSubview:button];
     [self.navBar addSubview:button];
     
@@ -236,10 +236,6 @@
 - (void)searchBit:(id)sender {
     BSearchViewController *searchVc = [[BSearchViewController alloc] init];
     [searchVc setHaveMyNavBar:YES];
-    if (self.bitClassData.count > 0){
-         BitClassEntity *entity = [self.bitClassData objectAtIndex:0];
-        [searchVc setFollowArray:[self.bitData objectForKey:entity.val]];
-    }
     [self.navigationController pushViewController:searchVc animated:YES];
 
 }

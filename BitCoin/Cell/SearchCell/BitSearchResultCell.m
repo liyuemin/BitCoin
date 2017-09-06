@@ -78,7 +78,7 @@
 
 }
 
-- (void)setCellData:(BitSearchResultEntity *)entity withkey:(NSString *)key withfollow:(BOOL)follow {
+- (void)setCellData:(BitSearchResultEntity *)entity withkey:(NSString *)key{
     self.resultEntity = entity;
     [self.titleLabel setText:entity.btc_title_display];
     NSLog(@"%@",self.titleLabel.text);
@@ -92,7 +92,7 @@
         [self.titleLabel setAttributedText:str];
     }
     [self.desLabel setText:entity.btc_trade_from_name];
-    if (follow){
+    if (entity.is_follow){
         [self.addButton setImage:[UIImage imageNamed:@"search_follow_icon"] forState:UIControlStateNormal];
         [self.addButton setEnabled:NO];
 

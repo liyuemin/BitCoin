@@ -99,26 +99,10 @@
 }
 
 - (void)searchBitKeyWork:(NSString *)word {
-    [self.searchViewModel requestSearchWithWord:@{@"keyword":word} withNet:YES];
+    [self.HUD showAnimated:YES];
+    [self.searchViewModel requestSearchWithWord:@{@"device_id":[NSString getDeviceIDInKeychain],@"keyword":word} withNet:YES];
 }
 
-- (BOOL)findFollowBit:(NSString *)bit{
-    for(id entity in self.followArray){
-        if ([entity isKindOfClass:[BitEnity class]]){
-            if ([[(BitEnity *)entity btc_id] isEqualToString:bit]){
-                return YES;
-            }
-            return NO;
-        
-        }else if ([entity isKindOfClass:[BitSearchResultEntity class]]){
-            if ([[(BitSearchResultEntity *)entity btc_id] isEqualToString:bit]){
-                return YES;
-            }
-            return NO;
-        }
-    }
-    return NO;
-}
 
 - (void)setViewModleBlock{
     @weakify(self)
@@ -128,6 +112,7 @@
         {
             return;
         }
+        [self.HUD hideAnimated:YES];
         if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitSerach_Code]){
             if (self.searchArray.count > 0){
                 [self.searchArray removeAllObjects];
@@ -142,8 +127,9 @@
             NSDictionary *info =  [extroInfo valueForKey:API_Back_ExtroInfo];
             BitSearchResultEntity *entity = [info valueForKey:@"btc"];
             if (entity){
-                [self.followArray addObject:entity];
+                [entity setIs_follow:YES];
             }
+            [self showAlertToast:@"关注成功"];
             [self.listView reloadData];
         }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
@@ -152,11 +138,20 @@
         {
             return;
         }
+        [self.HUD hideAnimated:YES];
+        if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
+            [self showAlertToast:@"关注失败"];
+        }
+
     } WithFailureBlock:^(id retrunParam, id extroInfo) {
         @strongify(self)
         if (!self)
         {
             return;
+        }
+        [self.HUD hideAnimated:YES];
+        if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
+            [self showAlertToast:@"关注失败"];
         }
     }];
 
@@ -209,7 +204,7 @@
             [cell setDelegate:self];
         }
         BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
-        [cell setCellData:entity withkey:self.searchField.text withfollow:[self findFollowBit:entity.btc_id]];
+        [cell setCellData:entity withkey:self.searchField.text];
         return cell;
     }
 
