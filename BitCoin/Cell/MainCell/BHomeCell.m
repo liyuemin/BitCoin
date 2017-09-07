@@ -141,6 +141,12 @@
     
     return 0;
 }
+-(void)tableView:(UITableView* )tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [cell setSeparatorInset:UIEdgeInsetsZero];
+    [cell setLayoutMargins:UIEdgeInsetsZero];
+}
 
 
 
@@ -151,9 +157,9 @@
         [_cellTable setDataSource:self];
         [_cellTable setShowsVerticalScrollIndicator:NO];
         [_cellTable setShowsHorizontalScrollIndicator:NO];
+        [_cellTable setSeparatorInset:UIEdgeInsetsZero];
+        [_cellTable setLayoutMargins:UIEdgeInsetsZero];
         _cellTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
-
-        
     }
     return _cellTable;
 }

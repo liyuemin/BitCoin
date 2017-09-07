@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "AppViewModel.h"
+#import "BitMessageController.h"
 @interface AppDelegate ()
 @property (nonatomic ,strong)AppViewModel *appViewModel;
 @end
@@ -24,6 +25,7 @@
     if ([KUserdefaults boolForKey:@"GeTuiPushType"]){
         [self requestAPNS:[KUserdefaults objectForKey:@"GeTuiclientId"]];
     }
+     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     return YES;
 }
 
@@ -66,6 +68,8 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     // 将收到的APNs信息传给个推统计
+    [self pushAPNSController];
+     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [GeTuiSdk handleRemoteNotification:userInfo];
     completionHandler(UIBackgroundFetchResultNewData);
 }
@@ -94,11 +98,21 @@
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
     
     NSLog(@"didReceiveNotification：%@", response.notification.request.content.userInfo);
-    
+     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     // [ GTSdk ]：将收到的APNs信息传给个推统计
     [GeTuiSdk handleRemoteNotification:response.notification.request.content.userInfo];
-    
+    [self pushAPNSController];
     completionHandler();
+}
+
+- (void)pushAPNSController{
+    BitMessageController *message = [[BitMessageController alloc] init];
+    [message setHaveMyNavBar:YES];
+    [message setHaveBackBtn:YES];
+
+    UINavigationController *naivigation = (UINavigationController *)self.window.rootViewController;
+    
+    [naivigation.topViewController.navigationController pushViewController:message animated:YES];
 }
 
 
@@ -142,6 +156,7 @@
                                                                        UIRemoteNotificationTypeBadge);
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
     }
+    
 }
 
 - (void)requestAPNS:(NSString *)clientId{

@@ -7,6 +7,7 @@
 //
 
 #import "BitMessageCell.h"
+#import "NSDate+YYAdd.h"
 
 @interface BitMessageCell()
 
@@ -50,7 +51,7 @@
 
 - (void)setContronsView:(CGSize)size{
     [self.titleLable mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.top.mas_equalTo(self.contentView).offset(10);
+        maker.top.mas_equalTo(self.contentView).offset(15);
         maker.left.mas_equalTo(self.contentView).offset(15);
         maker.right.mas_equalTo(self.contentView).offset(-15);
         maker.height.mas_equalTo(size.height);
@@ -67,10 +68,17 @@
 
 
 - (void)setMessageCellData:(BitMessageEntity *)entity {
-    CGSize titleSize = [entity.content boundingRectWithSize:CGSizeMake(ScreenWidth - 20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+    CGSize titleSize = [entity.content boundingRectWithSize:CGSizeMake(ScreenWidth - 30, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
     [self setContronsView:titleSize];
     [self.titleLable setText:entity.content];
-    [self.desLabel setText:entity.create_time];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[entity.create_time longLongValue]];
+    NSDate *currentDate = [NSDate date];
+    if ([date year] == [currentDate year]){
+        [self.desLabel setText:[NSString stringWithFormat:@"%@",[date stringWithFormat:@"HH:mm:ss"]]];
+    } else {
+        [self.desLabel setText:[NSString stringWithFormat:@"%@",[date stringWithFormat:@"yyyy/MM/dd HH:mm"]]];
+
+    }
 
 }
 

@@ -28,25 +28,26 @@
 }
 
 - (void)setConstraintsViews{
+    [self.roseLabel mas_updateConstraints:^(MASConstraintMaker *maker){
+        maker.right.mas_equalTo(self).offset(-15);
+        maker.top.mas_equalTo(self).offset(5);
+        maker.bottom.mas_equalTo(self).offset(-5);
+        maker.width.mas_equalTo(80);
+    }];
+    
+
     [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *maker){
-        maker.left.mas_equalTo(self).offset(10);
+        maker.left.mas_equalTo(self).offset(15);
         maker.top.mas_equalTo(self).offset(5);
         maker.bottom.mas_equalTo(self).offset(-5);
         maker.width.mas_equalTo(100);
     }];
     [self.priceLabel mas_updateConstraints:^(MASConstraintMaker *maker){
         maker.top.mas_equalTo(self).offset(5);
-        maker.centerX.mas_equalTo(self.mas_centerX);
+        maker.right.mas_equalTo(self.roseLabel.mas_left).offset(-20);
         maker.bottom.mas_equalTo(self).offset(-5);
         maker.width.mas_equalTo(100);
     }];
-    [self.roseLabel mas_updateConstraints:^(MASConstraintMaker *maker){
-        maker.right.mas_equalTo(self).offset(-10);
-        maker.top.mas_equalTo(self).offset(5);
-        maker.bottom.mas_equalTo(self).offset(-5);
-        maker.width.mas_equalTo(100);
-    }];
-
 
 }
 
@@ -62,7 +63,7 @@
     if (!_priceLabel){
         _priceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         [_priceLabel setTextColor:k_9596AB];
-        [_priceLabel setTextAlignment:NSTextAlignmentCenter];
+        [_priceLabel setTextAlignment:NSTextAlignmentRight];
         [_priceLabel setFont:SYS_FONT(12)];
     }
     return _priceLabel;

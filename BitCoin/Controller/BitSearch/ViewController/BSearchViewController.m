@@ -54,7 +54,7 @@
     
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    UIView *searchView = [[UIView alloc]initWithFrame:CGRectMake(0, 7, ScreenWidth, 30)];
+    UIView *searchView = [[UIView alloc]initWithFrame:CGRectMake(0, 7, ScreenWidth-75, 30)];
     [searchView setBackgroundColor:[UIColor whiteColor]];
     [searchView.layer setCornerRadius:2];
     [searchView.layer setBorderWidth:1];
@@ -232,10 +232,13 @@
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (!_isSarch){
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
+        
+        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, ScreenWidth - 15, 40)];
         [headerLabel setTextColor:k_B5B5B5];
-        [headerLabel setText:@"  大家都在搜"];
-        return headerLabel;
+        [headerLabel setText:@"大家都在搜"];
+        [headerView addSubview:headerLabel];
+        return headerView;
     }
     return nil;
 }
@@ -303,7 +306,7 @@
 
 -(UITextField *)searchField {
     if (!_searchField){
-        _searchField = [[UITextField alloc] initWithFrame:CGRectMake(30, 2, ScreenWidth - 60, 26)];
+        _searchField = [[UITextField alloc] initWithFrame:CGRectMake(28, 3, ScreenWidth - 60, 26)];
         [_searchField setClearButtonMode:UITextFieldViewModeAlways];
         [_searchField setReturnKeyType:UIReturnKeyDone];
         [_searchField setDelegate:self];

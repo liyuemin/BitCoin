@@ -83,7 +83,7 @@
 - (void)setConstraint{
     CGFloat buttonWidth = (ScreenWidth - 30 - 60) / 4.0;
     [self.oneButton mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.left.mas_equalTo(self.contentView).offset(10);
+        maker.left.mas_equalTo(self.contentView).offset(15);
         maker.top.mas_equalTo(self.contentView).offset(5);
         maker.width.mas_equalTo(buttonWidth);
         maker.bottom.mas_equalTo(self.contentView).offset(-5);

@@ -105,6 +105,20 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    BitMessageEntity *entity = [self.listArray objectAtIndex:indexPath.row];
+    CGSize titleSize = [entity.content boundingRectWithSize:CGSizeMake(ScreenWidth - 30, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+    return titleSize.height + 60;
+}
+
+-(void)tableView:(UITableView* )tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [cell setSeparatorInset:UIEdgeInsetsZero];
+    [cell setLayoutMargins:UIEdgeInsetsZero];
+}
+
+
 - (void)headerWithRefreshing{
    [self requesMessage:1];
 }
@@ -114,14 +128,14 @@
         _listView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
         [_listView setDelegate:self];
         [_listView setDataSource:self];
+        [_listView setSeparatorInset:UIEdgeInsetsZero];
+        [_listView setLayoutMargins:UIEdgeInsetsZero];
+
         _listView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
     }
     return _listView;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
-}
 
 - (NSMutableArray *)listArray{
     if (!_listArray){

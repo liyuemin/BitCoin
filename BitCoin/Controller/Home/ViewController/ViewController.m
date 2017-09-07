@@ -411,6 +411,8 @@
     {
         _loadingView = [[MSLoadingView alloc]initWithFrame:CGRectMake(0, 64,ScreenWidth, ScreenHeight - 64)];
         _loadingView.hidden = YES;
+        [_loadingView setReloadImage:@"refrensh_button_cion"];
+        [_loadingView setNetworkImage:@"network_Icon"];
         _loadingView.delegate = self;
     }
     return _loadingView;

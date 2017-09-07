@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, MSLoadingType)
 @property (nonatomic, assign) MSLoadingType loadingType;
 @property (nonatomic, assign) MSNoResultType noResultType;
 @property (nonatomic, assign) id <MSLoadingViewDelegate> delegate;
-@property (nonatomic ,strong)UIImage *reloadImage;
+@property (nonatomic ,strong)NSString *reloadImage;
+@property (nonatomic ,strong)NSString *networkImage;
 
 @end

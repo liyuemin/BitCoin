@@ -99,7 +99,7 @@
         case MSNoResultNetType:
         {
             
-            [self reloadCenterImageWithName:@"网络错误点击刷新按钮刷新"];
+            [self reloadCenterImageWithName:self.networkImage];
             [self reloadRetryBtn];
         }
             break;
@@ -146,10 +146,9 @@
 - (void)reloadRetryBtn
 {
     if (_reloadImage != nil){
-        [self.centerBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
-    }else {
-        [self.centerBtn setTitle:@"刷新" forState:UIControlStateNormal];
+        [self.centerBtn setImage:[UIImage imageNamed:_reloadImage] forState:UIControlStateNormal];
     }
+    [self.centerBtn setTitle:@"刷新" forState:UIControlStateNormal];
     [self addSubview:self.centerBtn];
     
     [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {

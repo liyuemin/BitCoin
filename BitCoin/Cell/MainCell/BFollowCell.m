@@ -45,26 +45,46 @@
 
 - (void)setConstraintViews{
     
-    [self.moneyLabel mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.center.mas_equalTo(self.contentView);
-        maker.width.mas_equalTo(100);
-        maker.height.mas_equalTo(20);
-    }];
-   
     [self.preButton mas_makeConstraints:^(MASConstraintMaker *maker){
         maker.right.mas_equalTo(self.contentView).offset(-15);
         maker.centerY.mas_equalTo(self.contentView.mas_centerY);
         maker.width.mas_equalTo(80);
         maker.height.mas_equalTo(32);
     }];
+
+    
+    [self.moneyLabel mas_makeConstraints:^(MASConstraintMaker *maker){
+        maker.right.mas_equalTo(self.preButton.mas_left).offset(-20);
+        maker.centerY.mas_equalTo(self.contentView.mas_centerY);
+        maker.width.mas_equalTo(100);
+        maker.height.mas_equalTo(20);
+    }];
+    
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *maker){
+        maker.left.mas_equalTo(self.contentView).offset(15);
+        maker.top.mas_equalTo(self.contentView).offset(18);
+        maker.right.mas_equalTo(self.moneyLabel.mas_left).offset(-15);
+        maker.height.mas_equalTo(20);
+    }];
+    
+    [self.desLable mas_makeConstraints:^(MASConstraintMaker *maker){
+        maker.left.mas_equalTo(self.contentView).offset(15);
+        maker.top.mas_equalTo(self.titleLabel.mas_bottom).offset(6);
+        maker.right.mas_equalTo(self.moneyLabel.mas_left).offset(-15);
+        maker.height.mas_equalTo(20);
+
+    }];
+
+
+   
 }
 
-- (void)upConstraintViews {
-    [self.titleLabel sizeToFit];
-    [self.desLable sizeToFit];
-    [self.titleLabel setFrame:CGRectMake(15, 18, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height)];
-    [self.desLable setCenter:CGPointMake(self.titleLabel.center.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 8)];
-}
+//- (void)upConstraintViews {
+//    [self.titleLabel sizeToFit];
+//    [self.desLable sizeToFit];
+//    [self.titleLabel setFrame:CGRectMake(15, 18, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height)];
+//    [self.desLable setCenter:CGPointMake(self.titleLabel.center.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 8)];
+//}
 
 - (UILabel *)titleLabel {
     if (!_titleLabel){
@@ -80,7 +100,7 @@
     if (!_desLable){
         _desLable = [[UILabel alloc] init];
         [_desLable setTextColor:k_9596AB];
-        [_desLable setTextAlignment:NSTextAlignmentCenter];
+        [_desLable setTextAlignment:NSTextAlignmentLeft];
         [_desLable setFont:SYS_FONT(12)];
         
     }
@@ -89,9 +109,9 @@
 -(UILabel *)moneyLabel{
     if (!_moneyLabel){
         _moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        [_moneyLabel setTextAlignment:NSTextAlignmentCenter];
+        [_moneyLabel setTextAlignment:NSTextAlignmentRight];
         [_moneyLabel setTextColor:k_D0402D];
-        [_moneyLabel setFont:SYS_FONT(16)];
+        [_moneyLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16]];
     }
     return _moneyLabel;
 }
@@ -110,7 +130,7 @@
 - (void)setFollowData:(BitEnity *)entity {
     [self.titleLabel setText:entity.btc_title_display];
     [self.desLable setText:entity.btc_trade_from_name];
-    [self upConstraintViews];
+    //[self upConstraintViews];
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
     [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
     if ([entity.rising floatValue] > 0){
@@ -126,7 +146,7 @@
 - (void)setDetailCellData:(BitDetailsEntity *)entity{
     [self.titleLabel setText:entity.btc_title_display];
     [self.desLable setText:entity.btc_trade_from_name];
-    [self upConstraintViews];
+    //[self upConstraintViews];
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
     [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
     if ([entity.rising floatValue] > 0){
