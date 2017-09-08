@@ -28,6 +28,8 @@
     [self setViewModelCallBack];
     [self requesMessage:1];
     [self.view addSubview:self.loadingView];
+    [self.navBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:k_3C3C3C,NSForegroundColorAttributeName,SYS_FONT(18),NSFontAttributeName,nil]];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -125,7 +127,7 @@
 
 - (UITableView *)listView {
     if(!_listView){
-        _listView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
+        _listView = [[UITableView alloc] initWithFrame:CGRectMake(0, 65, ScreenWidth, ScreenHeight - 65) style:UITableViewStylePlain];
         [_listView setDelegate:self];
         [_listView setDataSource:self];
         [_listView setSeparatorInset:UIEdgeInsetsZero];
@@ -153,7 +155,7 @@
 
 - (MSLoadingView *)loadingView{
     if (!_loadingView){
-        _loadingView = [[MSLoadingView alloc]initWithFrame:CGRectMake(0, 64,ScreenWidth, ScreenHeight - 64)];
+        _loadingView = [[MSLoadingView alloc]initWithFrame:CGRectMake(0, 65,ScreenWidth, ScreenHeight - 64)];
         _loadingView.hidden = YES;
 
     }

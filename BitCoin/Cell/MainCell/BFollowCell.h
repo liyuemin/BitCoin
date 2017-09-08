@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "BitEnity.h"
-#import "BitDetailsEntity.h"
+
 @interface BFollowCell : UITableViewCell
 
 - (void)setFollowData:(BitEnity *)entity;
 
-- (void)setDetailCellData:(BitDetailsEntity *)entity;
 
 @end

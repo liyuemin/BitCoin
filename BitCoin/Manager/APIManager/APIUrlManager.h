@@ -37,6 +37,7 @@ extern NSString *const API_BitFollow_Code;
 extern NSString *const API_BitANPSRegister_Code;
 extern NSString *const API_BitMessage_Code;
 extern NSString *const API_BitPrice_Code;
+extern NSString *const API_BitUnFollow_Code;
 
 #pragma mark - 登录
 extern NSString *const API_Login_Code;

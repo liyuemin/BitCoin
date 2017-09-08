@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL noMyNavBarBackBtn;
 @property (nonatomic, strong) UINavigationBar *navBar;
 @property (nonatomic, strong) UIColor * navBarColor;
+@property (nonatomic ,strong) NSString *backImageName;
 @property (nonatomic ,strong)MBProgressHUD *HUD;
 @property (nonatomic,assign)CGFloat navBarH;
 @property (nonatomic, assign) BOOL lineBool;

@@ -36,7 +36,7 @@ NSString *const API_BitFollow_Code = @"/v1/device/follow";
 NSString *const API_BitANPSRegister_Code = @"/v1/device/register";
 NSString *const API_BitMessage_Code = @"/v1/device/message/";
 NSString *const API_BitPrice_Code = @"/v1/btc/price";
-
+NSString *const API_BitUnFollow_Code = @"/v1/device/un_follow";
 
 
 

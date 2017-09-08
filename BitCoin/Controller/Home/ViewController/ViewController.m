@@ -39,7 +39,7 @@
     [self setupViews];
     [self setViewModle];
     [self requestHttp];
-    [self setDesplayTimer];
+    //[self setDesplayTimer];
     [self.view addSubview:self.loadingView];
 }
 
@@ -79,7 +79,13 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if (self.bitClassData.count > 0){
+        [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:0] val] page:1 withLoad:NO withRefrensh:YES];
+    }
 
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -239,22 +245,18 @@
 
 - (void)searchBit:(id)sender {
     BSearchViewController *searchVc = [[BSearchViewController alloc] init];
+    [searchVc setNavBarColor:k_FAFAFA];
     [searchVc setHaveMyNavBar:YES];
-    __weak  ViewController *wself = self;
-    [searchVc setFollowBlock:^(BOOL reslut){
-        if (reslut){
-            if (self.bitClassData.count > 0){
-                [wself requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:0] val] page:1 withLoad:NO withRefrensh:YES];
-            }
-           
-        }
-    }];
+    [searchVc setLineBool:YES];
     [self.navigationController pushViewController:searchVc animated:YES];
 
 }
 
 - (void)gomMessage:(id)sender{
     BitMessageController *messageVC = [[BitMessageController alloc] init];
+    [messageVC setNavBarColor:k_FAFAFA];
+    [messageVC setBackImageName:@"nav_back_one"];
+    [messageVC setLineBool:YES];
     [messageVC setHaveMyNavBar:YES];
     [messageVC setHaveBackBtn:YES];
     [self.navigationController pushViewController:messageVC animated:YES];
@@ -312,6 +314,7 @@
 
 - (void)didSelectIndexData:(BitEnity *)entity {
     BDetailsController *detailsVc = [[BDetailsController alloc] init];
+    [detailsVc setIsfollow:entity.is_follow];
     [detailsVc setBitId:entity.btc_id];
     detailsVc.haveMyNavBar = YES;
     [detailsVc setNavititle:entity.btc_title_display];
@@ -339,8 +342,9 @@
         _segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth;
         _segmentedControl.frame = CGRectMake(0, 60, ScreenWidth, 40);
         _segmentedControl.segmentEdgeInset = UIEdgeInsetsMake(0, 10, 0, 10);
-        _segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleFullWidthStripe;
+        _segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
         _segmentedControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
+        //[_segmentedControl setSegmentWidthStyle:HMSegmentedControlSegmentWidthStyleDynamic];
         [_segmentedControl setSelectionIndicatorColor:k_5080D8];
         [_segmentedControl setTitleFormatter:^NSAttributedString *(HMSegmentedControl *segmentedControl, NSString *title, NSUInteger index, BOOL selected) {
             NSAttributedString *attString = nil;

@@ -21,5 +21,6 @@
 @property (nonatomic ,strong)NSString *rising_val;
 @property (nonatomic ,strong)NSString *rising;
 @property (nonatomic ,strong)NSString *trading;
+@property (nonatomic ,assign)BOOL is_follow;
 
 @end

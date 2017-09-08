@@ -112,8 +112,8 @@
        
         case MSNoResultShowreelType:
         {
-            [self reloadCenterImageWithName:@"load_noZuopin"];
-             [self reloadCenterLabelWithName:@"暂无作品集"];
+            [self reloadRetryBtn];
+             [self reloadUpLabelWithName:@"点击添加币种\n体验智能预警超强功能"];
         }
         default:
             break;
@@ -143,20 +143,40 @@
     self.centerLabel.text = labelName;
 }
 
+- (void)reloadUpLabelWithName:(NSString *)labelName{
+    [self addSubview:self.centerLabel];
+    [self.centerLabel setNumberOfLines:0];
+    [self.centerLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(self.centerBtn.mas_top).offset(-20);//120 是centerImageView的高度*0.5
+        make.left.right.mas_equalTo(self);
+        make.height.mas_equalTo(40);
+    }];
+    self.centerLabel.text = labelName;
+
+}
+
 - (void)reloadRetryBtn
 {
     if (_reloadImage != nil){
         [self.centerBtn setImage:[UIImage imageNamed:_reloadImage] forState:UIControlStateNormal];
     }
-    [self.centerBtn setTitle:@"刷新" forState:UIControlStateNormal];
     [self addSubview:self.centerBtn];
-    
-    [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(self);
-        make.centerY.mas_equalTo(self.centerImageView.mas_centerY).offset(60+20);//120 是centerImageView的高度*0.5，20是vertical高度
-        make.width.mas_equalTo(80);
-        make.height.mas_equalTo(30);
-    }];
+    if (self.networkImage != nil){
+         [self.centerBtn setTitle:@"刷新" forState:UIControlStateNormal];
+        [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self);
+            make.centerY.mas_equalTo(self.centerImageView.mas_centerY).offset(60+20);//120 是centerImageView的高度*0.5，20是vertical高度
+            make.width.mas_equalTo(80);
+            make.height.mas_equalTo(30);
+        }];
+    } else {
+        [self.centerBtn sizeToFit];
+        [self.centerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self);
+            make.centerY.mas_equalTo(self.mas_centerY).offset(-30);//120 是centerImageView的高度*0.5，20是vertical高度
+        }];
+
+    }
     self.centerBtn.layer.cornerRadius = 3.0;
     self.centerBtn.layer.borderColor = k_E5E5E5.CGColor;
     self.centerBtn.layer.borderWidth = 1/[UIScreen mainScreen].scale;

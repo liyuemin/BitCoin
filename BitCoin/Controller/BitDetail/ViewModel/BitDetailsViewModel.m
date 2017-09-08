@@ -37,6 +37,34 @@
     
     [self dataWithTaskUrl:API_Base Method:@"GET" Param:nil Sender:senderDic];
 }
+- (void)requestUnFollow:(NSArray *)param withBackParam:(NSDictionary *)back withNet:(BOOL)net{
+    NSMutableString *requestUrl = [NSMutableString stringWithCapacity:10];
+    for (NSString *sring in param){
+        [requestUrl appendString:[NSString stringWithFormat:@"/%@",sring]];
+    }
+
+    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@%@",API_BitUnFollow_Code,requestUrl],API_Back_URLCode,back,API_Back_ExtroInfo,nil];
+    
+    if (!net)
+    {
+        [senderDic setObject:@(true) forKey:API_Back_NotNet];
+    }
+    
+    [self dataWithTaskUrl:API_Base Method:@"DELETE" Param:param Sender:senderDic];
+}
+
+- (void)requestFollow:(NSDictionary *)param withBackParam:(NSDictionary *)back withNet:(BOOL)net{
+    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:API_BitFollow_Code,API_Back_URLCode,back,API_Back_ExtroInfo,nil];
+    
+    if (!net)
+    {
+        [senderDic setObject:@(true) forKey:API_Back_NotNet];
+    }
+    
+    [self dataWithTaskUrl:API_Base Method:@"POST" Param:param Sender:senderDic];
+    
+}
+
 
 - (NSURLSessionDataTask *)dataWithTaskUrl:(NSString *)url Method:(NSString *)method Param:(id )param Sender:(NSDictionary *)sender
 {

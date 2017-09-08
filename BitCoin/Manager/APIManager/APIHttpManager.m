@@ -211,8 +211,15 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(APIHttpManager);
     NSLog(@"----%@",[self.sessionManager.requestSerializer HTTPRequestHeaders]);
     self.sessionManager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
 
-   return [self.sessionManager DELETE:url parameters:requestParam success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject){
+   return [self.sessionManager DELETE:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject){
        NSLog(@"DELETE requesUrl is:%@ response is %@",url,responseObject);
+       if(!responseObject)
+       {
+           NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)task.response;
+           NSInteger responseStatusCode = [httpResponse statusCode];
+           block(@{@"statusCode":[NSString stringWithFormat:@"%ld",responseStatusCode],@"methodString":@"DELETE"},back);
+       }
+
        if ([responseObject isKindOfClass:[NSDictionary class]] ||[responseObject isKindOfClass:[NSArray class]])
        {
            if(block)

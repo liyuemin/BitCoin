@@ -10,14 +10,14 @@
 #import "BitDetailsViewModel.h"
 #import "BitDetailsEntity.h"
 #import "BitDetailsPriceEntity.h"
-#import "BFollowCell.h"
+#import "BitDetailsCell.h"
 #import "BitLineChartCell.h"
 #import "BitDetailsTextCell.h"
 #import "BitDetailsWebCell.h"
 #import "BitWebController.h"
+#import "BitPlatformEntity.h"
 
-
-@interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitLineChartCellDelegate>
+@interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitLineChartCellDelegate,BitDetailsCellDelegate>
 @property (nonatomic ,strong)BitDetailsViewModel *detailsViewModel;
 @property (nonatomic ,strong)BitDetailsEntity*detailsEntity;
 @property (nonatomic ,strong)NSMutableDictionary *pricData;
@@ -69,15 +69,12 @@
         [self.HUD hideAnimated:YES];
         NSString *urlSring = [NSString stringWithFormat:@"%@%@",API_BitDetail_Code,self.bitId];
           if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:urlSring]){
-              self.detailsEntity = [BitDetailsEntity mj_objectWithKeyValues:returnParam[@"detail"]];
-              if (self.detailsEntity.btc_web.length > 0){
-                 [self.webArray addObject:self.detailsEntity.btc_web];
-              }if (self.detailsEntity.btc_trade_from_url.length > 0){
-                  [self.webArray addObject:self.detailsEntity.btc_trade_from_url];
-              }
-              //self.pricArray = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam[@"m_price"]];
+              NSDictionary *entityData =  returnParam[@"detail"];
+              self.detailsEntity = [BitDetailsEntity mj_objectWithKeyValues:entityData];
+              [self.detailsEntity setIs_follow:self.isfollow];
+              self.webArray = [BitPlatformEntity mj_objectArrayWithKeyValuesArray:entityData[@"btc_detail_kv"]];
               [self.listView reloadData];
-          } else if ([[extroInfo valueForKey:API_BitPrice_Code] rangeOfString:API_BitPrice_Code].location != NSNotFound){
+          } else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitPrice_Code].location != NSNotFound){
               NSString *key = [extroInfo valueForKey:API_Back_ExtroInfo];
               if ([self.requestKey isEqualToString:key]){
                   if ([self.pricData allKeys].count > 0){
@@ -88,6 +85,25 @@
                   [self.listView reloadData];
               }
 
+          }else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
+              NSDictionary *info =  [extroInfo valueForKey:API_Back_ExtroInfo];
+              BitDetailsEntity *entity = [info valueForKey:@"btc"];
+              if (entity){
+                  [entity setIs_follow:YES];
+              }
+              //self.followBlock(YES);
+              [self showAlertToast:@"关注成功"];
+              [self.listView reloadData];
+          }
+          else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitUnFollow_Code].location != NSNotFound){
+              NSDictionary *info =  [extroInfo valueForKey:API_Back_ExtroInfo];
+              BitDetailsEntity *entity = [info valueForKey:@"btc"];
+              if (entity){
+                  [entity setIs_follow:NO];
+              }
+              //self.followBlock(YES);
+              [self showAlertToast:@"取消关注成功"];
+              [self.listView reloadData];
           }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
         @strongify(self)
@@ -96,6 +112,11 @@
             return;
         }
         [self.HUD hideAnimated:YES];
+        if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
+           [self showAlertToast:@"关注失败"];
+        }else if([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitUnFollow_Code].location != NSNotFound){
+           [self showAlertToast:@"取消关注失败"];
+        }
     } WithFailureBlock:^(id retrunParam, id extroInfo) {
         @strongify(self)
         if (!self)
@@ -103,6 +124,12 @@
             return;
         }
         [self.HUD hideAnimated:YES];
+        if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
+            [self showAlertToast:@"关注失败"];
+        }else if([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitUnFollow_Code].location != NSNotFound){
+            [self showAlertToast:@"取消关注失败"];
+        }
+
     }];
 
 }
@@ -120,10 +147,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0){
        static NSString *followIdentifier = @"followIdentifier";
-        BFollowCell *cell = [tableView dequeueReusableCellWithIdentifier:followIdentifier];
+        BitDetailsCell *cell = [tableView dequeueReusableCellWithIdentifier:followIdentifier];
         if (!cell){
-            cell = [[BFollowCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:followIdentifier];
+            cell = [[BitDetailsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:followIdentifier];
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            [cell setDelegate:self];
         }
         [cell setDetailCellData:self.detailsEntity];
         return cell;
@@ -160,7 +188,9 @@
         }else {
            [cell.titleLabel setText:@"交易地址"];
         }
-        NSMutableAttributedString *content = [[NSMutableAttributedString alloc]initWithString:[self.webArray objectAtIndex:indexPath.row - 3]];
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+        [cell.titleLabel setText:entity.k];
+        NSMutableAttributedString *content = [[NSMutableAttributedString alloc]initWithString:entity.v];
         NSRange contentRange = {0,[content length]};
         [content addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:contentRange];
         [cell.webLabel setAttributedText:content];
@@ -170,7 +200,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0){
-        return 72;
+        return 130;
     }else if (indexPath.row == 1){
         return 240;
     }else if (indexPath.row == 2){
@@ -198,6 +228,16 @@
 - (void)selectSegmentIndex:(NSInteger)index withKey:(NSString *)key {
     self.requestKey = [key copy];
     [self requesPricebitId:self.bitId withtype:key];
+}
+
+
+- (void)selectDetailsCell:(BitDetailsCell *)cell withFollow:(BOOL)follow {
+    if (follow){
+        [self.detailsViewModel requestFollow:@{@"device_id":[NSString getDeviceIDInKeychain],@"btc_id":self.detailsEntity.btc_id} withBackParam:@{@"btc":self.detailsEntity} withNet:YES];
+    }else {
+        [self.detailsViewModel requestUnFollow:@[[NSString getDeviceIDInKeychain],self.detailsEntity.btc_id] withBackParam:@{@"btc":self.detailsEntity} withNet:YES];
+    }
+
 }
 
 

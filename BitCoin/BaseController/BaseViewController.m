@@ -110,21 +110,27 @@
         attrs[NSFontAttributeName] = SYS_FONT(navBarTitleI);
         [self.navBar setTitleTextAttributes:attrs];
         
+        
+        [self.navBar lt_setBackgroundColor:self.navBarColor?:Sys_Nav_Bar_Color];
         if (self.lineBool)
         {
-          [self.navBar setShadowImage:[MViewTools generateOnePixImageWithColor:k_DCDCDC]];
+            [self.navBar setShadowImage:[MViewTools generateOnePixImageWithColor:k_D3D3D3]];
         }
         else
         {
             [self.navBar setShadowImage:[[UIImage alloc] init]];
         }
-        
-        [self.navBar lt_setBackgroundColor:self.navBarColor?:Sys_Nav_Bar_Color];
+
         
         if (!self.noMyNavBarBackBtn)
         {
             UIButton * backBtn = [[UIButton alloc]init];
-            [backBtn setImage:[UIImage imageNamed:@"nav_back"] forState:UIControlStateNormal];
+            if (self.backImageName.length > 0){
+                [backBtn setImage:[UIImage imageNamed:self.backImageName] forState:UIControlStateNormal];
+            }else {
+                [backBtn setImage:[UIImage imageNamed:@"nav_back"] forState:UIControlStateNormal];
+            }
+
             [backBtn sizeToFit];
             [backBtn addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
             [backBtn setImageEdgeInsets:TOPBAR_BACKEDGE];
@@ -138,7 +144,11 @@
         if (self.haveBackBtn)
         {
             UIButton * tmpBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            [tmpBackBtn setImage:[UIImage imageNamed:@"nav_back"] forState:UIControlStateNormal];
+            if (self.backImageName.length > 0){
+               [tmpBackBtn setImage:[UIImage imageNamed:self.backImageName] forState:UIControlStateNormal];
+            }else {
+                [tmpBackBtn setImage:[UIImage imageNamed:@"nav_back"] forState:UIControlStateNormal];
+            }
             [tmpBackBtn sizeToFit];
             [tmpBackBtn addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
             [tmpBackBtn setImageEdgeInsets:TOPBAR_BACKEDGE];

@@ -71,6 +71,7 @@
     
     UIButton * rightBnt = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightBnt setTitle:@"取消" forState:UIControlStateNormal];
+    [rightBnt setTitleColor:k_5080D8 forState:UIControlStateNormal];
     [rightBnt addTarget:self action:@selector(cancelSearch:) forControlEvents:UIControlEventTouchUpInside];
     [rightBnt sizeToFit];
     UIBarButtonItem * rightBntItem = [[UIBarButtonItem alloc]initWithCustomView:rightBnt];
@@ -247,6 +248,7 @@
     BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
     BDetailsController *detailsVc = [[BDetailsController alloc] init];
     [detailsVc setBitId:entity.btc_id];
+    [detailsVc setIsfollow:entity.is_follow];
     detailsVc.haveMyNavBar = YES;
     [detailsVc setNavititle:entity.btc_title_display];
     [self.navigationController pushViewController:detailsVc animated:YES];
@@ -283,12 +285,12 @@
     NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     CGRect keyboardRect = [aValue CGRectValue];
     int height = keyboardRect.size.height;
-    [self.listView setFrame:CGRectMake(0, 64, ScreenWidth, ScreenHeight - 64 - height)];
+    [self.listView setFrame:CGRectMake(0, 65, ScreenWidth, ScreenHeight - 65 - height)];
 }
 
 //当键退出时调用
 - (void)keyboardWillHide:(NSNotification *)aNotification{
-   [self.listView setFrame:CGRectMake(0, 64, ScreenWidth, ScreenHeight - 64)];
+   [self.listView setFrame:CGRectMake(0, 65, ScreenWidth, ScreenHeight - 65)];
 }
 
 
@@ -325,7 +327,7 @@
 
 - (UITableView *)listView{
     if (!_listView){
-        _listView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, ScreenWidth, ScreenHeight - 64)];
+        _listView = [[UITableView alloc] initWithFrame:CGRectMake(0, 65, ScreenWidth, ScreenHeight - 65)];
         [_listView setDelegate:self];
         [_listView setDataSource:self];
     }

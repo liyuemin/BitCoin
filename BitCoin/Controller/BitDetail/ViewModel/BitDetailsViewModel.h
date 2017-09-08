@@ -12,4 +12,6 @@
 
 - (void)requesBitDetailsWithId:(NSString *)bitid net:(BOOL)net;
 - (void)requestBitPrice:(NSArray *)pram withkey:(NSString *)key net:(BOOL)net;
+- (void)requestUnFollow:(NSArray *)param withBackParam:(NSDictionary *)back withNet:(BOOL)net;
+- (void)requestFollow:(NSDictionary *)param withBackParam:(NSDictionary *)back withNet:(BOOL)net;
 @end

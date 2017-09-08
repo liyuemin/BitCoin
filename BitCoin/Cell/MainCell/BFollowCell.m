@@ -90,7 +90,7 @@
     if (!_titleLabel){
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setTextColor:k_3C3C3C];
-        [_titleLabel setFont:SYS_FONT(16)];
+        [_titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16]];
         
     }
     return _titleLabel;
@@ -139,22 +139,6 @@
     }else {
         [self.preButton setBackgroundColor:k_17B03E];
         [self.moneyLabel setTextColor:k_17B03E];
-    }
-
-}
-
-- (void)setDetailCellData:(BitDetailsEntity *)entity{
-    [self.titleLabel setText:entity.btc_title_display];
-    [self.desLable setText:entity.btc_trade_from_name];
-    //[self upConstraintViews];
-    [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
-    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
-    if ([entity.rising floatValue] > 0){
-        [self.preButton setBackgroundColor:k_D0402D];
-        [self.moneyLabel setTextColor:k_D0402D];
-    }else {
-        [self.preButton setBackgroundColor:k_17B03E];
-         [self.moneyLabel setTextColor:k_17B03E];
     }
 
 }

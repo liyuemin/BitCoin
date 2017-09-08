@@ -9,12 +9,14 @@
 #import "BHomeCell.h"
 #import "BFollowCell.h"
 #import "BitHomeHeaderView.h"
+#import "MSLoadingView.h"
 
-@interface BHomeCell()<UITableViewDelegate,UITableViewDataSource>
+@interface BHomeCell()<UITableViewDelegate,UITableViewDataSource,MSLoadingViewDelegate>
 
 @property (nonatomic ,strong)UITableView *cellTable;
 @property (nonatomic ,strong)NSArray *data;
 @property (nonatomic ,assign)NSInteger currenIndex;
+@property(nonatomic,strong)MSLoadingView * loadingView;
 @end
 
 @implementation BHomeCell
@@ -41,8 +43,18 @@
 -(void)loadData:(NSArray *)array withIndex:(NSInteger)index{
     self.data = array;
     self.currenIndex = index;
+    if (array != nil){
+        if (index == 0 && array.count == 0){
+            if (_loadingView == nil){
+                  [self.contentView addSubview:self.loadingView];
+            }
+            [_loadingView setHidden:NO];
+        }else {
+             [_loadingView setHidden:YES];
+        }
+    }
     [self.cellTable reloadData];
-
+    
 }
 
 -(void)beginRefreshing {
@@ -149,6 +161,13 @@
 }
 
 
+- (void)msLoadingRetryAction {
+    if (_delegate && [_delegate respondsToSelector:@selector(addBitFollow)]){
+        [_delegate addBitFollow];
+    }
+}
+
+
 
 - (UITableView *)cellTable {
     if (!_cellTable){
@@ -169,5 +188,18 @@
     }
     return _data;
 }
+-(MSLoadingView *)loadingView
+{
+    if (!_loadingView)
+    {
+        _loadingView = [[MSLoadingView alloc]initWithFrame:CGRectMake(0, 0,ScreenWidth, ScreenHeight - 64)];
+        [_loadingView setReloadImage:@"home_add_follow_cion"];
+        [_loadingView setNoResultType:MSNoResultShowreelType];
+        _loadingView.hidden = NO;
+        _loadingView.delegate = self;
+    }
+    return _loadingView;
+}
+
 
 @end

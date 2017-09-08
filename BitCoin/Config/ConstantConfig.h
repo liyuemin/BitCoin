@@ -74,6 +74,10 @@
 #define k_3A4455 [UIColor color16WithHexString:@"#3A4455 " alpha:1]
 #define k_333333 [UIColor color16WithHexString:@"#333333" alpha:1]
 #define k_EFEFF4 [UIColor color16WithHexString:@"#EFEFF4" alpha:1]
+#define k_5080D8 [UIColor color16WithHexString:@"#5080D8" alpha:1]
+#define k_D3D3D3 [UIColor color16WithHexString:@"#D3D3D3" alpha:1]
+
+
 
 #define k_DCDCDC [UIColor color16WithHexString:@"#DCDCDC" alpha:1]
 #define k_2A2A2A [UIColor color16WithHexString:@"#2A2A2A" alpha:1]
