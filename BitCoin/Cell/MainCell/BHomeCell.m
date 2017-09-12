@@ -11,12 +11,13 @@
 #import "BitHomeHeaderView.h"
 #import "MSLoadingView.h"
 
-@interface BHomeCell()<UITableViewDelegate,UITableViewDataSource,MSLoadingViewDelegate>
+@interface BHomeCell()<UITableViewDelegate,UITableViewDataSource,MSLoadingViewDelegate,BFollowCellDelegate>
 
 @property (nonatomic ,strong)UITableView *cellTable;
 @property (nonatomic ,strong)NSArray *data;
 @property (nonatomic ,assign)NSInteger currenIndex;
-@property(nonatomic,strong)MSLoadingView * loadingView;
+@property (nonatomic,strong)MSLoadingView * loadingView;
+@property (nonatomic ,strong)NSMutableDictionary *pathData;
 @end
 
 @implementation BHomeCell
@@ -43,16 +44,16 @@
 -(void)loadData:(NSArray *)array withIndex:(NSInteger)index{
     self.data = array;
     self.currenIndex = index;
-    if (array != nil){
-        if (index == 0 && array.count == 0){
-            if (_loadingView == nil){
-                  [self.contentView addSubview:self.loadingView];
-            }
-            [_loadingView setHidden:NO];
-        }else {
-             [_loadingView setHidden:YES];
+    
+    if (index == 0 && array.count == 0){
+        if (_loadingView == nil){
+            [self.contentView addSubview:self.loadingView];
         }
+        [_loadingView setHidden:NO];
+    }else {
+        [_loadingView setHidden:YES];
     }
+    
     [self.cellTable reloadData];
     
 }
@@ -95,9 +96,10 @@
     BFollowCell *cell = [tableView dequeueReusableCellWithIdentifier:identifer];
     if (!cell){
         cell = [[BFollowCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifer];
-        
+        [cell setDelegate:self];
     }
-    [cell setFollowData:[self.data objectAtIndex:indexPath.row]];
+    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",indexPath.row]] boolValue];
+    [cell setFollowData:[self.data objectAtIndex:indexPath.row] withDisPlay:display];
     return cell;
 }
 
@@ -114,7 +116,7 @@
 }
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    BitHomeHeaderView *headerView = [[BitHomeHeaderView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 30)];
+    BitHomeHeaderView *headerView = [[BitHomeHeaderView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 41)];
     [headerView setBackgroundColor:k_FFFFFF];
     [headerView.titleLabel setText:@"名称"];
     [headerView.priceLabel setText:@"当前价"];
@@ -123,17 +125,22 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30;
+    if (self.data.count > 0){
+        return 41;
+    }
+    return 0;
 }
 
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    if (self.currenIndex == 0  && self.data.count < 5){
+    if (self.currenIndex == 0  && self.data.count < 5 && self.data.count > 0){
         UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 72)];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setFrame:CGRectMake(0, 0, ScreenWidth, 72)];
         [button setImage:[UIImage imageNamed:@"search_footerfollow_icon"] forState:UIControlStateNormal];
         [button setTitle:@"点击添加币种" forState:UIControlStateNormal];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, -10)];
+        [button setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 0)];
         [button setTitleColor:k_9596AB forState:UIControlStateNormal];
         [button addTarget:self action:@selector(searchBit:) forControlEvents:UIControlEventTouchUpInside];
         [footerView addSubview:button];
@@ -167,6 +174,13 @@
     }
 }
 
+- (void)didSelect:(BFollowCell *)cell withDisPlay:(BOOL)display {
+    NSIndexPath *path = [self.cellTable indexPathForCell:cell];
+    [self.pathData setObject:[NSNumber numberWithBool:display] forKey:[NSString stringWithFormat:@"%ld",path.row]];
+    [self.cellTable reloadRowsAtIndexPaths:@[path]
+                          withRowAnimation:UITableViewRowAnimationNone];
+}
+
 
 
 - (UITableView *)cellTable {
@@ -188,6 +202,15 @@
     }
     return _data;
 }
+
+- (NSMutableDictionary *)pathData{
+    if (!_pathData){
+        _pathData = [[NSMutableDictionary alloc] init];
+    }
+    return _pathData;
+}
+
+
 -(MSLoadingView *)loadingView
 {
     if (!_loadingView)

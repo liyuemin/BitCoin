@@ -8,10 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "BitEnity.h"
+@protocol BFollowCellDelegate;
 
 @interface BFollowCell : UITableViewCell
+@property (nonatomic ,unsafe_unretained)id <BFollowCellDelegate>delegate;
+- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display;
 
-- (void)setFollowData:(BitEnity *)entity;
 
+@end
+
+@protocol BFollowCellDelegate <NSObject>
+
+@optional
+- (void)didSelect:(BFollowCell *)cell withDisPlay:(BOOL)display;
 
 @end

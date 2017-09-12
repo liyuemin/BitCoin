@@ -46,6 +46,7 @@
     _oneButton = [[UIButton alloc] init];
     [_oneButton setTitleColor:k_636363 forState:UIControlStateNormal];
     [_oneButton.layer setCornerRadius:2];
+    [_oneButton.titleLabel setFont:SYS_FONT(12)];
     [_oneButton setTag:BitSearchHotButtonTag];
     [_oneButton setClipsToBounds:YES];
     [_oneButton addTarget:self action:@selector(clictButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -55,6 +56,7 @@
     _twoButton = [[UIButton alloc] init];
     [_twoButton setTitleColor:k_636363 forState:UIControlStateNormal];
     [_twoButton.layer setCornerRadius:2];
+    [_twoButton.titleLabel setFont:SYS_FONT(12)];
     [_twoButton setClipsToBounds:YES];
     [_twoButton setTag:BitSearchHotButtonTag+1];
     [_twoButton addTarget:self action:@selector(clictButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -65,6 +67,7 @@
     [_threeButton setTitleColor:k_636363 forState:UIControlStateNormal];
     [_threeButton.layer setCornerRadius:2];
     [_threeButton setClipsToBounds:YES];
+    [_threeButton.titleLabel setFont:SYS_FONT(12)];
     [_threeButton setTag:BitSearchHotButtonTag+2];
     [_threeButton addTarget:self action:@selector(clictButton:) forControlEvents:UIControlEventTouchUpInside];
     [_threeButton setBackgroundColor:k_F4F5F9];
@@ -74,6 +77,7 @@
     [_fourButton setTitleColor:k_636363 forState:UIControlStateNormal];
     [_fourButton.layer setCornerRadius:2];
     [_fourButton setClipsToBounds:YES];
+    [_fourButton.titleLabel setFont:SYS_FONT(12)];
     [_fourButton addTarget:self action:@selector(clictButton:) forControlEvents:UIControlEventTouchUpInside];
     [_fourButton setTag:BitSearchHotButtonTag+3];
     [_fourButton setBackgroundColor:k_F4F5F9];

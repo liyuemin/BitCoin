@@ -10,8 +10,15 @@
 
 @implementation BitDetailsViewModel
 
-- (void)requesBitDetailsWithId:(NSString *)bitid net:(BOOL)net {
-    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@%@",API_BitDetail_Code,bitid],API_Back_URLCode,nil];
+- (void)requesBitDetailsWithId:(NSArray *)param net:(BOOL)net {
+    NSMutableString *requestUrl = [NSMutableString stringWithCapacity:10];
+    for (NSString *sring in param){
+        [requestUrl appendString:[NSString stringWithFormat:@"/%@",sring]];
+    }
+    
+    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@%@",API_BitDetail_Code,requestUrl],API_Back_URLCode,nil];
+    
+
     
     if (!net)
     {
@@ -63,6 +70,23 @@
     
     [self dataWithTaskUrl:API_Base Method:@"POST" Param:param Sender:senderDic];
     
+}
+
+- (void)requestLasterPrice:(NSArray *)pram withKey:(NSString *)key withNet:(BOOL)net {
+    NSMutableString *requestUrl = [NSMutableString stringWithCapacity:10];
+    for (NSString *sring in pram){
+        [requestUrl appendString:[NSString stringWithFormat:@"/%@",sring]];
+    }
+    
+    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@%@",API_BitLaster_Code,requestUrl],API_Back_URLCode,key,API_Back_ExtroInfo,nil];
+    
+    if (!net)
+    {
+        [senderDic setObject:@(true) forKey:API_Back_NotNet];
+    }
+    
+    [self dataWithTaskUrl:API_Base Method:@"GET" Param:nil Sender:senderDic];
+
 }
 
 

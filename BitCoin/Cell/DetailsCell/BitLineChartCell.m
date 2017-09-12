@@ -48,14 +48,14 @@
 
     
     [self.lineChart mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.left.mas_equalTo(self.contentView).offset(0);
+        maker.left.mas_equalTo(self.contentView).offset(20);
         maker.top.mas_equalTo(self.contentView).offset(60);
         maker.right.mas_equalTo(self.contentView).offset(0);
         maker.bottom.mas_equalTo(self.contentView).offset(0);
     }];
 }
 
-- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key {
+- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key withLaster:(BitDetailsPriceEntity *)entity {
     if(array && array.count > 0){
         if ([key isEqualToString:@"minute"]){
             [self.lineChart setTimeType:BitLineTimeTypeMinutes];
@@ -66,8 +66,12 @@
         }else if ([key isEqualToString:@"month"]){
             [self.lineChart setTimeType:BitLineTimeTypeMonth];
         }
-        [self.lineChart setDataArray:array];
+        [self.lineChart setDataArray:array withLaster:entity];
     }
+}
+
+- (void)upDataBitData:(BitDetailsPriceEntity *)priceEntity {
+
 }
 
 - (void)didClicksegmentedControlAction:(UISegmentedControl *)segment{
@@ -103,7 +107,7 @@
     if (!_lineChart){
         _lineChart = [[BitLineChartView alloc] initWithFrame:CGRectZero];
         [self.lineChart setVerticalCount:5];
-        [self.lineChart setHorizontalCount:8];
+        [self.lineChart setHorizontalCount:5];
         [self.lineChart setLineColor:k_4689FA];
         [self.lineChart setLineXYColor:k_3A4455];
         [self.lineChart setVerticalTextColor:k_3A4455];

@@ -8,6 +8,13 @@
 
 #import "BitLineChartView.h"
 #import "NSDate+YYAdd.h"
+#import "BitUpDateView.h"
+
+#define BitUpDateViewTag  230
+#define VerticalLabelTag 1000
+#define HorizontalLabelTag 2000
+
+
 @interface BitLineChartView()
 
 @property (nonatomic ,assign)CGFloat bounceX;
@@ -17,7 +24,9 @@
 @property (nonatomic ,assign)CGFloat maxPointY;
 @property (nonatomic ,assign)CGFloat minPointY;
 @property (nonatomic ,strong)NSMutableArray *layers;
-
+@property (nonatomic ,strong)NSArray *dataArray;
+@property (nonatomic ,strong)BitUpDateView *upView;
+@property (nonatomic ,assign)BitLineTimeType currentTimeType;
 @end
 
 @implementation BitLineChartView
@@ -36,10 +45,11 @@
     return self;
 }
 
-- (void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray withLaster:(BitDetailsPriceEntity *)entity{
     if (dataArray.count == 0 || dataArray == nil){
         return;
     }
+    _lasterPrice = entity;
     _dataArray = dataArray;
     NSArray *resultArray = [self.dataArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         
@@ -63,10 +73,16 @@
         _maxPointX =  dmixTime;
         _minPointX = dmaxTime;
     }
-
+    if (_upView){
+        CGPoint upPoint = [self getLinePoint:entity];
+         [_upView.label setText:[NSString stringWithFormat:@"%.2lf",[entity.btc_price floatValue]]];
+         [_upView setCenter:CGPointMake(self.frame.size.width - 35, upPoint.y)];
+    }
+    [self clearChartData];
     [self setNeedsDisplay];
     
 }
+
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -88,52 +104,35 @@
     
     CGContextMoveToPoint(ctx, _bounceX, _bounceY);
     CGContextAddLineToPoint(ctx, _bounceX, rect.size.height - _bounceY);
-    CGContextAddLineToPoint(ctx,20,rect.size.height - _bounceY);
+    CGContextAddLineToPoint(ctx,0,rect.size.height - _bounceY);
     CGContextStrokePath(ctx);
 
     
-    CGFloat width = (self.frame.size.width - 60) / _horizontalCount;
-    for(int i = 0 ; i < _horizontalCount ; i++){
+    CGFloat width = (self.frame.size.width - 80) / _horizontalCount;
+    for(int i = 1 ; i < _horizontalCount + 1 ; i++){
         
-        if (i>0 && i< _horizontalCount){
-            CAShapeLayer *dashLayer = [CAShapeLayer layer];
-            dashLayer.strokeColor = self.lineXYColor.CGColor;
-            dashLayer.fillColor = [UIColor clearColor].CGColor;
-            dashLayer.lineWidth = 1.0;
-            
-            UIBezierPath *path = [[UIBezierPath alloc] init];
-            path.lineWidth = 1.0;
-            [[UIColor blackColor]setStroke];
-            [[UIColor greenColor]setFill];
-            [path moveToPoint:CGPointMake(i*width , self.frame.size.height - 20)];
-            [path addLineToPoint:CGPointMake(i*width, self.frame.size.height - 25)];
-            [path stroke];
-            dashLayer.path = path.CGPath;
-            [self.layers addObject:dashLayer];
-            [self.layer addSublayer:dashLayer];
-        }
+        UIBezierPath *path = [[UIBezierPath alloc] init];
+        path.lineWidth = 1.0;
+        [self.lineXYColor setStroke];
+        [self.lineXYColor setFill];
+        [path moveToPoint:CGPointMake(i*width  , self.frame.size.height - 20)];
+        [path addLineToPoint:CGPointMake(i*width, self.frame.size.height - 25)];
+        [path stroke];
+        
     }
     CGFloat height = (self.frame.size.height - 40)/ _verticalCount;
     for (int i = 0; i < _verticalCount ; i++){
         
         if (i< _verticalCount){
-            CAShapeLayer *dashLayer = [CAShapeLayer layer];
-            dashLayer.strokeColor = self.lineXYColor.CGColor;
-            dashLayer.fillColor = [UIColor clearColor].CGColor;
-            dashLayer.lineWidth = 1.0;
-            
             UIBezierPath *path = [[UIBezierPath alloc] init];
             path.lineWidth = 1.0;
-            [[UIColor blackColor]setStroke];
+            [self.lineXYColor setStroke];
             [[UIColor greenColor]setFill];
             
             [path moveToPoint:CGPointMake(self.frame.size.width - 55, 20+i*height)];
-            [path addLineToPoint:CGPointMake(20, 20+i*height)];
+            [path addLineToPoint:CGPointMake(0, 20+i*height)];
             [path closePath];
             [path stroke];
-            dashLayer.path = path.CGPath;
-            [self.layers addObject:dashLayer];
-            [self.layer addSublayer:dashLayer];
         }
     }
     if (self.dataArray.count > 0){
@@ -142,8 +141,18 @@
         UIColor * color = [UIColor greenColor];
         [color set];
         [path moveToPoint:[self getLinePoint:[self.dataArray lastObject]]];
-        for (NSInteger i = self.dataArray.count - 2 ; i > 0  ; i--){
+        for (NSInteger i = self.dataArray.count - 2 ; i >= 0  ; i--){
             [path addLineToPoint:[self getLinePoint:[self.dataArray objectAtIndex:i]]];
+        }
+        
+        if (!self.lasterPrice){
+            CGPoint onePoint = [self getLinePoint:[self.dataArray objectAtIndex:0]];
+            CGPoint point = CGPointMake(self.frame.size.width - 60, onePoint.y);
+            [path addLineToPoint:point];
+        }else {
+            CGPoint lasterPoint = [self getLinePoint:self.lasterPrice];
+            CGPoint point = CGPointMake(self.frame.size.width - 60, lasterPoint.y);
+            [path addLineToPoint:point];
         }
         
         CAShapeLayer *lineChartLayer = [CAShapeLayer layer];
@@ -160,13 +169,26 @@
 }
 
 - (void)layoutSubviews{
-    [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj removeFromSuperview];
-    }];
+    long lTimeValue = labs(_maxPointX - _minPointX) / _horizontalCount ;
+    if (self.lasterPrice){
+        long currentTimer = [self.lasterPrice.create_time longLongValue];
+        if (currentTimer - _maxPointX >= lTimeValue){
+            [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (![obj isKindOfClass:[BitUpDateView class]]){
+                    [obj removeFromSuperview];
+                }
+            }];
+            if (self.dataArray.count > 0 ){
+                [self creatVerticalLabel];
+                [self creatHorizontalLabel];
+            }
 
-    if (self.dataArray.count > 0){
+        }
+    }
+    if (self.dataArray.count > 0 && _currentTimeType != self.timeType){
         [self creatVerticalLabel];
         [self creatHorizontalLabel];
+        _currentTimeType = self.timeType;
     }
 }
 
@@ -184,70 +206,91 @@
 
 - (void)creatVerticalLabel{
     CGFloat height = (self.frame.size.height - 40)/ _verticalCount ;
-    
-    
-    
     CGFloat verticalValue = fabs(_maxPointY - _minPointY) / (_verticalCount + 1) ;
-    
     for (int i = 0; i < _verticalCount ; i++){
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 50,20 +i*height - height/2, 50, height)];
+        UILabel *label = [self viewWithTag:VerticalLabelTag + i];
+        if (!label){
+        
+            label = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 50,20 +i*height - height/2, 50, height)];
+            [label setTag:VerticalLabelTag + i];
+            [label setTextColor:self.verticalTextColor];
+            [label setFont:SYS_FONT(9)];
+            [self addSubview:label];
+
+        }
         [label setText:[NSString stringWithFormat:@"%.2lf",_maxPointY - i*verticalValue]];
-        [label setTextColor:self.verticalTextColor];
-        [label setFont:SYS_FONT(9)];
-        [self addSubview:label];
+    }
+    if (!_upView){
+        _upView = [[BitUpDateView alloc] initWithFrame:CGRectMake(self.frame.size.width - 50, 0, 50, 15)];
+        [self addSubview:_upView];
+        [_upView setTag:BitUpDateViewTag];
+        BitDetailsPriceEntity *data = [self.dataArray objectAtIndex:0];
+        [_upView.label setText:[NSString stringWithFormat:@"%.2lf",[data.btc_price floatValue]]];
+        CGPoint upPoint = [self getLinePoint:data];
+        [_upView setCenter:CGPointMake(self.frame.size.width - 35, upPoint.y)];
     }
 }
 
 - (void)creatHorizontalLabel{
     
-    CGFloat width = (self.frame.size.width - 60) / _horizontalCount;
+    CGFloat width = (self.frame.size.width - 80) / _horizontalCount;
     
     
-    long lTimeValue = labs(_maxPointX - _minPointX) / _horizontalCount;
+    long lTimeValue = labs(_maxPointX - _minPointX) / _horizontalCount ;
     
-    for(int i = 0 ; i < _horizontalCount ; i++){
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(i*width + width/2, self.frame.size.height - 20, width, 20)];
+    for(int i = 1 ; i < _horizontalCount+1   ; i++){
+        UILabel *label =  [self viewWithTag:HorizontalLabelTag + i];
+        if (!label){
+          label =  [[UILabel alloc] initWithFrame:CGRectMake(width *i - width/2, self.frame.size.height - 20, width, 20)];
+            [label setTag:HorizontalLabelTag + i];
+            [label setTextAlignment:NSTextAlignmentCenter];
+            [label setTextColor:self.horizontalTextColor];
+            [label setFont:SYS_FONT(9)];
+            [self addSubview:label];
+        }
         long time = _minPointX + lTimeValue * i;
         NSDate *dateValue = [NSDate dateWithTimeIntervalSince1970:time];
         if (self.timeType == BitLineTimeTypeMinutes){
             
-          [label setText:[NSString stringWithFormat:@"%ld:%ld",[dateValue hour],[dateValue minute]]];
+          [label setText:[NSString stringWithFormat:@"%ld:%@",[dateValue hour],[self getDoubleIntSring:[dateValue minute]]]];
         } else if (self.timeType == BitLineTimeTypeHours){
-           [label setText:[NSString stringWithFormat:@"%ld-%ld:%ld",[dateValue month],[dateValue day],[dateValue hour]]];
+           [label setText:[NSString stringWithFormat:@"%ld月%ld日%ld时",[dateValue month],[dateValue day],[dateValue hour]]];
         }else if (self.timeType == BitLineTimeTypeDays){
-           [label setText:[NSString stringWithFormat:@"%ld-%ld:%ld",[dateValue year],[dateValue month],[dateValue day]]];
+           [label setText:[NSString stringWithFormat:@"%ld月%ld日",[dateValue month],[dateValue day]]];
         }else if (self.timeType == BitLineTimeTypeMonth){
-           [label setText:[NSString stringWithFormat:@"%ld:%ld",[dateValue year],[dateValue month]]];
+           [label setText:[NSString stringWithFormat:@"%ld年%ld月",[dateValue year],[dateValue month]]];
         }
-        [label setTextAlignment:NSTextAlignmentCenter];
-        [label setTextColor:self.horizontalTextColor];
-        [label setFont:SYS_FONT(9)];
-        [self addSubview:label];
+         if (i == _horizontalCount){
+            NSLog(@"最后一个lable的中心店%@",NSStringFromCGPoint(label.center));
+        }
     }
 }
 
 
 
 
-- (CGPoint)getLinePoint:(NSDictionary *)pointData {
-    CGFloat timeX = [[pointData valueForKey:@"create_time"] floatValue];
-    CGFloat pointX = 20 + (timeX - _minPointX)/(_maxPointX - _minPointX) *(self.frame.size.width - 80);
-    CGFloat priceY = [[pointData valueForKey:@"btc_price"] floatValue];
+- (CGPoint)getLinePoint:(BitDetailsPriceEntity *)pointData {
+    CGFloat timeX = [pointData.create_time longLongValue];
+    CGFloat pointX = ((timeX - _minPointX)/(float)(_maxPointX - _minPointX))*(self.frame.size.width - 80);
+    CGFloat priceY = [pointData.btc_price floatValue];
+    if (priceY >= _maxPointY){
+        priceY =  _maxPointY;
+    }
     CGFloat pointY =(self.frame.size.height - 40) - ((priceY - _minPointY)/(_maxPointY - _minPointY) *(self.frame.size.height - 40)) + 20;
-    
+    NSLog(@"数据---%@ --- x轴%lf---y轴%lf ---- %lf",[pointData mj_keyValues],pointX,pointY,self.frame.size.width);
     return CGPointMake(pointX, pointY);
 }
 
-- (CGFloat)getLineX:(NSDictionary *)pointData{
-    CGFloat timeX = [[pointData valueForKey:@"create_time"] floatValue];
-    CGFloat pointX =  (_maxPointX - timeX)/(_maxPointX - _minPointX) *(self.frame.size.width - 60);
+- (CGFloat)getLineX:(BitDetailsPriceEntity *)pointData{
+    CGFloat timeX = [pointData.create_time floatValue];
+    CGFloat pointX =  (_maxPointX - timeX)/(_maxPointX - _minPointX) *(self.frame.size.width - 80);
     
     return pointX;
     
 }
 
-- (CGFloat)getLineY:(NSDictionary *)pointData{
-    CGFloat priceY = [[pointData valueForKey:@"btc_price"] floatValue];
+- (CGFloat)getLineY:(BitDetailsPriceEntity *)pointData{
+    CGFloat priceY = [pointData.btc_price floatValue];
     
     CGFloat pointY = (priceY -_minPointY)/fabs(_maxPointY - _minPointY) *(self.frame.size.height - 40);
     return pointY;
@@ -259,6 +302,15 @@
     }
     return _layers;
 }
+
+- (NSString *)getDoubleIntSring:(NSInteger )terger{
+    if (terger >= 10){
+        return [NSString stringWithFormat:@"%ld",terger];
+    }else {
+        return [NSString stringWithFormat:@"0%ld",terger];
+    }
+}
+
 
 
 @end

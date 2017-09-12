@@ -177,14 +177,14 @@
         [self.roseRateLabel setTextColor:k_D0402D];
         [self.rosePriceLabel setTextColor:k_D0402D];
         [self.roseRateLabel setText:[NSString stringWithFormat:@"+%.2lf%%",[entity.rising floatValue]/100.0]];
-        [self.rosePriceLabel setText:[NSString stringWithFormat:@"+%@",entity.rising_val]];
+        [self.rosePriceLabel setText:[NSString stringWithFormat:@"+%.2f",[entity.rising_val floatValue]]];
 
     }else {
         [self.priceLabel setTextColor:k_17B03E];
         [self.roseRateLabel setTextColor:k_17B03E];
         [self.rosePriceLabel setTextColor:k_17B03E];
         [self.roseRateLabel setText:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0]];
-        [self.rosePriceLabel setText:[NSString stringWithFormat:@"%@",entity.rising_val]];
+        [self.rosePriceLabel setText:[NSString stringWithFormat:@"%.2f",[entity.rising_val floatValue]]];
 
     }
     if (entity.is_follow){

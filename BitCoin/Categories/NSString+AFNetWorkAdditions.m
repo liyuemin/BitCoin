@@ -146,4 +146,11 @@ NSString * const KEY_UDID_INSTEAD = @"com.maobo.BitCoin.udidkey";
     SecItemDelete((CFDictionaryRef)keychainQuery);
 }
 
+- (BOOL)isValidUrl
+{
+    NSString *regex =@"[a-zA-z]+://[^\\s]*";
+    NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
+    return [urlTest evaluateWithObject:self];
+}
+
 @end

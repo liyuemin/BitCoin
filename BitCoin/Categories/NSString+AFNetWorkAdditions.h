@@ -34,5 +34,6 @@ extern NSString *const KEY_UDID_INSTEAD;
 + (NSString*) uniqueString;
 - (NSString*) mk_urlEncodedString;
 - (NSString*) urlDecodedString;
+- (BOOL)isValidUrl;
 
 @end

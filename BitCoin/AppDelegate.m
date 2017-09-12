@@ -25,7 +25,6 @@
     if ([KUserdefaults boolForKey:@"GeTuiPushType"]){
         [self requestAPNS:[KUserdefaults objectForKey:@"GeTuiclientId"]];
     }
-     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     return YES;
 }
 

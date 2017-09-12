@@ -29,7 +29,7 @@ NSString * const API_H5_GoVideoDetail = @"/tapai?id=";
 
 NSString *const API_BitHomeList_Code = @"/v1/btc/index";
 NSString *const API_BitClassInfo_Code = @"/v1/btc/type";
-NSString *const API_BitDetail_Code = @"/v1/btc/detail/";
+NSString *const API_BitDetail_Code = @"/v1/btc/detail";
 NSString *const API_BitSerach_Code = @"/v1/btc/search";
 NSString *const API_BitSearchHot_Code = @"/v1/btc/hot_search";
 NSString *const API_BitFollow_Code = @"/v1/device/follow";
@@ -37,7 +37,7 @@ NSString *const API_BitANPSRegister_Code = @"/v1/device/register";
 NSString *const API_BitMessage_Code = @"/v1/device/message/";
 NSString *const API_BitPrice_Code = @"/v1/btc/price";
 NSString *const API_BitUnFollow_Code = @"/v1/device/un_follow";
-
+NSString *const API_BitLaster_Code   = @"/v1/btc/latest";
 
 
 

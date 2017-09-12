@@ -7,23 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BitDetailsPriceEntity.h"
 
 typedef enum {
-    BitLineTimeTypeMinutes = 0,
-    BitLineTimeTypeHours = 1,
-    BitLineTimeTypeDays = 2,
-    BitLineTimeTypeMonth = 3
+    BitLineTimeTypeMinutes = 5,
+    BitLineTimeTypeHours = 6,
+    BitLineTimeTypeDays = 7,
+    BitLineTimeTypeMonth = 8
     
 }BitLineTimeType;
 
 @interface BitLineChartView : UIView
 @property (nonatomic ,assign)NSInteger verticalCount;
 @property (nonatomic ,assign)NSInteger horizontalCount;
-@property (nonatomic ,strong)NSArray *dataArray;
 @property (nonatomic ,assign)BitLineTimeType timeType;
 @property (nonatomic ,strong)UIColor *lineColor;
 @property (nonatomic ,strong)UIColor *lineXYColor;
 @property (nonatomic ,strong)UIColor *verticalTextColor;
 @property (nonatomic ,strong)UIColor *horizontalTextColor;
+@property (nonatomic ,strong)BitDetailsPriceEntity *lasterPrice;
 - (void)clearChartData;
+- (void)setDataArray:(NSArray *)dataArray withLaster:(BitDetailsPriceEntity *)entity;
 @end

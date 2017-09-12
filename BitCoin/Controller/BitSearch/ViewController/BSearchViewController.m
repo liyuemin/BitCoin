@@ -107,6 +107,7 @@
 - (void)searchBitKeyWork:(NSString *)word {
     [self.HUD showAnimated:YES];
     [self.searchViewModel requestSearchWithWord:@{@"device_id":[NSString getDeviceIDInKeychain],@"keyword":word} withNet:YES];
+    NSLog(@"%@",word);
 }
 
 
@@ -155,6 +156,17 @@
         if (!self)
         {
             return;
+        }
+        if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitSerach_Code]){
+            ApiError *error = (ApiError *)retrunParam;
+            if (error.statusCode == 400){
+                if (self.searchArray.count > 0){
+                    [self.searchArray removeAllObjects];
+                }
+                [self.listView reloadData];
+               [self showAlertToast:@"没有搜索到结构"];
+                
+            }
         }
         [self.HUD hideAnimated:YES];
         if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
@@ -248,19 +260,11 @@
     BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
     BDetailsController *detailsVc = [[BDetailsController alloc] init];
     [detailsVc setBitId:entity.btc_id];
-    [detailsVc setIsfollow:entity.is_follow];
     detailsVc.haveMyNavBar = YES;
     [detailsVc setNavititle:entity.btc_title_display];
     [self.navigationController pushViewController:detailsVc animated:YES];
 
     
-}
-
-
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    _isSarch = YES;
-    [self.listView reloadData];
-   
 }
 
 
@@ -276,6 +280,8 @@
     [detailsVc setNavititle:entity.title];
     [self.navigationController pushViewController:detailsVc animated:YES];
 }
+
+
 
 //当键盘出现或改变时调用
 - (void)keyboardWillShow:(NSNotification *)aNotification
@@ -294,11 +300,18 @@
 }
 
 
-
-- ( BOOL )textField:( UITextField  *)textField shouldChangeCharactersInRange:(NSRange )range replacementString:( NSString  *)string {
-    [self searchBitKeyWork:textField.text];
-    return YES;
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _isSarch = YES;
+    [self.listView reloadData];
+    
 }
+
+-(void)textFieldEditChanged:(UITextField *)textField{
+    [self searchBitKeyWork:textField.text];
+}
+
+
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
    [textField resignFirstResponder];
@@ -311,6 +324,7 @@
         _searchField = [[UITextField alloc] initWithFrame:CGRectMake(28, 3, ScreenWidth - 60, 26)];
         [_searchField setClearButtonMode:UITextFieldViewModeAlways];
         [_searchField setReturnKeyType:UIReturnKeyDone];
+        [_searchField addTarget:self action:@selector(textFieldEditChanged:) forControlEvents:UIControlEventEditingChanged];
         [_searchField setDelegate:self];
         [_searchField setPlaceholder:@"搜索"];
         

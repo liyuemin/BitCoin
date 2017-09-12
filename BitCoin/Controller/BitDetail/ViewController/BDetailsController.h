@@ -11,5 +11,4 @@
 @interface BDetailsController : BaseViewController
 @property (nonatomic ,strong)NSString *bitId;
 @property (nonatomic ,strong)NSString *navititle;
-@property (nonatomic ,assign)BOOL isfollow;
 @end

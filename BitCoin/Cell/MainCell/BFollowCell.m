@@ -12,6 +12,7 @@
 @property (nonatomic ,strong)UILabel *desLable;
 @property (nonatomic ,strong)UILabel *moneyLabel;
 @property (nonatomic ,strong)UIButton *preButton;
+@property (nonatomic ,assign)BOOL is_disPlay;
 @end
 
 @implementation BFollowCell
@@ -21,6 +22,7 @@
     if (self){
         [self setUpViews];
         [self setConstraintViews];
+        self.is_disPlay = NO;
     }
     return self;
 }
@@ -121,19 +123,26 @@
         [_preButton.layer setCornerRadius:2];
         [_preButton setTitleColor:k_FAFAFA forState:UIControlStateNormal];
         [_preButton setClipsToBounds:YES];
+        [_preButton addTarget:self action:@selector(clictButton:) forControlEvents:UIControlEventTouchUpInside];
         [_preButton.titleLabel setFont:SYS_FONT(14)];
         
     }
     return _preButton;
 }
 
-- (void)setFollowData:(BitEnity *)entity {
+- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display {
     [self.titleLabel setText:entity.btc_title_display];
     [self.desLable setText:entity.btc_trade_from_name];
-    //[self upConstraintViews];
+    self.is_disPlay = display;
+    if (display){
+        [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf",[entity.rising_val floatValue]] forState:UIControlStateNormal];
+
+    }else {
+        [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
+
+    }
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
-    [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
-    if ([entity.rising floatValue] > 0){
+        if ([entity.rising floatValue] > 0){
         [self.preButton setBackgroundColor:k_D0402D];
         [self.moneyLabel setTextColor:k_D0402D];
     }else {
@@ -141,6 +150,13 @@
         [self.moneyLabel setTextColor:k_17B03E];
     }
 
+}
+
+- (void)clictButton:(UIButton *)button {
+    self.is_disPlay = !self.is_disPlay;
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelect:withDisPlay:)]){
+        [_delegate didSelect:self withDisPlay:self.is_disPlay];
+    }
 }
 
 @end

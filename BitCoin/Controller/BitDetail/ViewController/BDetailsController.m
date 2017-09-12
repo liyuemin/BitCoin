@@ -15,7 +15,8 @@
 #import "BitDetailsTextCell.h"
 #import "BitDetailsWebCell.h"
 #import "BitWebController.h"
-#import "BitPlatformEntity.h"
+#import "BitDetailsLasterPriceEntity.h"
+#import "NSString+AFNetWorkAdditions.h"
 
 @interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitLineChartCellDelegate,BitDetailsCellDelegate>
 @property (nonatomic ,strong)BitDetailsViewModel *detailsViewModel;
@@ -24,6 +25,9 @@
 @property (nonatomic ,strong)UITableView *listView;
 @property (nonatomic ,strong)NSMutableArray *webArray;
 @property (nonatomic ,copy)NSString *requestKey;
+@property (nonatomic ,strong)BitDetailsPriceEntity *priceEntity;
+@property (nonatomic ,strong)BitDetailsLasterPriceEntity *lasterPriceEntity;
+@property (nonatomic , strong)dispatch_source_t timer;
 @end
 
 @implementation BDetailsController
@@ -37,12 +41,23 @@
     [self requestDeltailsBitId:self.bitId];
     self.requestKey = @"minute";
     [self requesPricebitId:self.bitId withtype:@"minute"];
+   
+    [self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
 
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self stopTimer];
+}
+
+- (void)dealloc{
+    [self stopTimer];
 }
 
 - (void)setUpViews{
@@ -51,12 +66,47 @@
 
 - (void)requestDeltailsBitId:(NSString *)bitid{
     [self.HUD showAnimated:YES];
-    [self.detailsViewModel requesBitDetailsWithId:bitid net:YES];
+    [self.detailsViewModel requesBitDetailsWithId:@[bitid,[NSString getDeviceIDInKeychain]] net:YES];
 }
 
 - (void)requesPricebitId:(NSString *)bitid  withtype:(NSString *)date{
     [self.detailsViewModel requestBitPrice:@[bitid,date] withkey:date net:YES];
 }
+
+- (void)requestLasterPrice:(NSString *)bitid withKey:(NSString *)key{
+    [self.detailsViewModel requestLasterPrice:@[bitid,key] withKey:key withNet:YES];
+}
+
+- (void)setDesplayTimer{
+    NSTimeInterval period = 5.0;//设置时间间隔
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+   
+    dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, period * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
+    
+    dispatch_source_set_event_handler(_timer, ^{
+        
+        NSLog(@"%@" , [NSThread currentThread]);//打印当前线程
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self requestLasterPrice:self.bitId withKey:self.requestKey];
+        });
+        
+    });
+    
+    dispatch_resume(_timer);
+    
+}
+
+- (void)stopTimer{
+    if (_timer){
+         dispatch_source_cancel(_timer);
+        _timer = nil;
+    }
+}
+
 
 - (void)setViewModelBlock{
     @weakify(self)
@@ -67,11 +117,9 @@
             return;
         }
         [self.HUD hideAnimated:YES];
-        NSString *urlSring = [NSString stringWithFormat:@"%@%@",API_BitDetail_Code,self.bitId];
-          if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:urlSring]){
+          if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitDetail_Code].location != NSNotFound){
               NSDictionary *entityData =  returnParam[@"detail"];
               self.detailsEntity = [BitDetailsEntity mj_objectWithKeyValues:entityData];
-              [self.detailsEntity setIs_follow:self.isfollow];
               self.webArray = [BitPlatformEntity mj_objectArrayWithKeyValuesArray:entityData[@"btc_detail_kv"]];
               [self.listView reloadData];
           } else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitPrice_Code].location != NSNotFound){
@@ -103,6 +151,20 @@
               }
               //self.followBlock(YES);
               [self showAlertToast:@"取消关注成功"];
+              [self.listView reloadData];
+          } else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitLaster_Code].location != NSNotFound){
+              self.lasterPriceEntity = [BitDetailsLasterPriceEntity mj_objectWithKeyValues:returnParam[@"info"]];
+              if (self.lasterPriceEntity){
+                  [self.detailsEntity setRising:self.lasterPriceEntity.rising];
+                  [self.detailsEntity setTrading:self.lasterPriceEntity.trading];
+                  [self.detailsEntity setBtc_price:self.lasterPriceEntity.btc_price];
+                  [self.detailsEntity setRising_val:self.lasterPriceEntity.rising_val];
+                  BitDetailsPriceEntity *price = [[BitDetailsPriceEntity alloc] init];
+                  price.btc_price = self.detailsEntity.btc_price;
+                  price.create_time = [NSString stringWithFormat:@"%lld",(long long int)[[NSDate date] timeIntervalSince1970]];
+                  self.priceEntity = price;
+                  
+              }
               [self.listView reloadData];
           }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
@@ -163,7 +225,7 @@
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             [cell setDelegate:self];
         }
-        [cell setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey];
+        [cell setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
         return cell;
         
     }else if (indexPath.row == 2){
@@ -183,17 +245,9 @@
             cell = [[BitDetailsWebCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:webIdentifier];
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         }
-        if (indexPath.row == 3){
-            [cell.titleLabel setText:@"官网"];
-        }else {
-           [cell.titleLabel setText:@"交易地址"];
-        }
         BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
-        [cell.titleLabel setText:entity.k];
-        NSMutableAttributedString *content = [[NSMutableAttributedString alloc]initWithString:entity.v];
-        NSRange contentRange = {0,[content length]};
-        [content addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:contentRange];
-        [cell.webLabel setAttributedText:content];
+        [cell setWebCellData:entity];
+        
         return cell;
     }
 }
@@ -206,24 +260,23 @@
     }else if (indexPath.row == 2){
         return 80 + [self.detailsEntity.btc_desc boundingRectWithSize:CGSizeMake(ScreenWidth - 30, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size.height;
     } else {
-        return 60;
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+        
+        return 20 + [entity.v boundingRectWithSize:CGSizeMake(ScreenWidth - 250, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.height;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row >= 3){
-        NSString *urlsring =  nil;
-        if (indexPath.row == 3){
-            urlsring = [[self.webArray objectAtIndex:0] copy];
-        }else {
-            urlsring = [[self.webArray objectAtIndex:1] copy];
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+        if ([entity.v isValidUrl]){
+            BitWebController *webController = [[BitWebController alloc] init];
+            [webController setHaveMyNavBar:YES];
+            [webController setWebUrlString:entity.v];
+            [self.navigationController pushViewController:webController animated:YES];
         }
-        BitWebController *webController = [[BitWebController alloc] init];
-        [webController setHaveMyNavBar:YES];
-        [webController setWebUrlString:urlsring];
-        [self.navigationController pushViewController:webController animated:YES];
     }
-}
+ }
 
 - (void)selectSegmentIndex:(NSInteger)index withKey:(NSString *)key {
     self.requestKey = [key copy];
@@ -239,6 +292,8 @@
     }
 
 }
+
+
 
 
 - (BitDetailsViewModel *)detailsViewModel {

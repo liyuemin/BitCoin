@@ -19,6 +19,8 @@
 #import "BitMessageController.h"
 #import "NSDate+YYAdd.h"
 #import "MSLoadingView.h"
+#import "BitFeatureView.h"
+
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource,BHomeCellDelegate,MSLoadingViewDelegate>
 @property (nonatomic ,strong)UITableView *tableView;
@@ -41,6 +43,13 @@
     [self requestHttp];
     //[self setDesplayTimer];
     [self.view addSubview:self.loadingView];
+    
+    
+//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+//    UIView *aview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+//    [aview setBackgroundColor:[UIColor redColor]];
+//    [window addSubview:aview];
+
 }
 
 - (void)setupViews {
@@ -314,7 +323,6 @@
 
 - (void)didSelectIndexData:(BitEnity *)entity {
     BDetailsController *detailsVc = [[BDetailsController alloc] init];
-    [detailsVc setIsfollow:entity.is_follow];
     [detailsVc setBitId:entity.btc_id];
     detailsVc.haveMyNavBar = YES;
     [detailsVc setNavititle:entity.btc_title_display];
@@ -342,6 +350,7 @@
         _segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth;
         _segmentedControl.frame = CGRectMake(0, 60, ScreenWidth, 40);
         _segmentedControl.segmentEdgeInset = UIEdgeInsetsMake(0, 10, 0, 10);
+        _segmentedControl.selectionIndicatorHeight = 2.0f;
         _segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
         _segmentedControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
         //[_segmentedControl setSegmentWidthStyle:HMSegmentedControlSegmentWidthStyleDynamic];

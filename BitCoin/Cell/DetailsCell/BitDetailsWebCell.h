@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BitPlatformEntity.h"
 
 @interface BitDetailsWebCell : UITableViewCell
-@property (nonatomic ,strong)UILabel *titleLabel;
-@property (nonatomic ,strong)UILabel *webLabel;
-
+- (void)setWebCellData:(BitPlatformEntity *)entity;
 @end
