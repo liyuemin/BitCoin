@@ -157,8 +157,10 @@
 
 - (void)clictButton:(id)sender{
     UIButton *button = (UIButton *)sender;
-    if (_delegate != nil && [_delegate respondsToSelector:@selector(selectBitItem:)]){
-        [_delegate selectBitItem:[self.dataArray objectAtIndex:button.tag - BitSearchHotButtonTag]];
+    if (!button.hidden){
+        if (_delegate != nil && [_delegate respondsToSelector:@selector(selectBitItem:)]){
+            [_delegate selectBitItem:[self.dataArray objectAtIndex:button.tag - BitSearchHotButtonTag]];
+        }
     }
 }
 

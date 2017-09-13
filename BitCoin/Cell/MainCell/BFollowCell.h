@@ -12,7 +12,7 @@
 
 @interface BFollowCell : UITableViewCell
 @property (nonatomic ,unsafe_unretained)id <BFollowCellDelegate>delegate;
-- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display;
+- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display withAnimation:(BOOL)animation;
 
 
 @end

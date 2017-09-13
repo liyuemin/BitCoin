@@ -38,7 +38,7 @@ NSString *const API_BitMessage_Code = @"/v1/device/message/";
 NSString *const API_BitPrice_Code = @"/v1/btc/price";
 NSString *const API_BitUnFollow_Code = @"/v1/device/un_follow";
 NSString *const API_BitLaster_Code   = @"/v1/btc/latest";
-
+NSString *const API_BitStart_Code = @"/v1/btc/start";
 
 
 NSString *const API_Login_Code = @"/V1/Login";

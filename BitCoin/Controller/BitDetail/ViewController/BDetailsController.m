@@ -10,15 +10,16 @@
 #import "BitDetailsViewModel.h"
 #import "BitDetailsEntity.h"
 #import "BitDetailsPriceEntity.h"
-#import "BitDetailsCell.h"
-#import "BitLineChartCell.h"
+//#import "BitDetailsCell.h"
+//#import "BitLineChartCell.h"
 #import "BitDetailsTextCell.h"
 #import "BitDetailsWebCell.h"
 #import "BitWebController.h"
 #import "BitDetailsLasterPriceEntity.h"
 #import "NSString+AFNetWorkAdditions.h"
+#import "BitDetailsHeaderView.h"
 
-@interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitLineChartCellDelegate,BitDetailsCellDelegate>
+@interface BDetailsController ()<UITableViewDelegate ,UITableViewDataSource,BitDetailsHeaderViewDelegate>
 @property (nonatomic ,strong)BitDetailsViewModel *detailsViewModel;
 @property (nonatomic ,strong)BitDetailsEntity*detailsEntity;
 @property (nonatomic ,strong)NSMutableDictionary *pricData;
@@ -28,6 +29,7 @@
 @property (nonatomic ,strong)BitDetailsPriceEntity *priceEntity;
 @property (nonatomic ,strong)BitDetailsLasterPriceEntity *lasterPriceEntity;
 @property (nonatomic , strong)dispatch_source_t timer;
+@property (nonatomic ,strong)BitDetailsHeaderView *tableHeaderView;
 @end
 
 @implementation BDetailsController
@@ -43,7 +45,8 @@
     [self requesPricebitId:self.bitId withtype:@"minute"];
    
     [self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
-
+    
+ 
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,6 +65,10 @@
 
 - (void)setUpViews{
     [self.view addSubview:self.listView];
+    _tableHeaderView = [[BitDetailsHeaderView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 370)];
+    [_tableHeaderView setDelegate:self];
+    [self.listView setTableHeaderView:_tableHeaderView];
+
 }
 
 - (void)requestDeltailsBitId:(NSString *)bitid{
@@ -121,6 +128,10 @@
               NSDictionary *entityData =  returnParam[@"detail"];
               self.detailsEntity = [BitDetailsEntity mj_objectWithKeyValues:entityData];
               self.webArray = [BitPlatformEntity mj_objectArrayWithKeyValuesArray:entityData[@"btc_detail_kv"]];
+              
+              [self.tableHeaderView setDetailCellData:self.detailsEntity];
+              
+              
               [self.listView reloadData];
           } else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitPrice_Code].location != NSNotFound){
               NSString *key = [extroInfo valueForKey:API_Back_ExtroInfo];
@@ -130,7 +141,8 @@
                   }
                   NSArray *array  = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam];
                   [self.pricData setObject:array forKey:key];
-                  [self.listView reloadData];
+                  
+                  [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
               }
 
           }else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
@@ -141,7 +153,7 @@
               }
               //self.followBlock(YES);
               [self showAlertToast:@"关注成功"];
-              [self.listView reloadData];
+              [self.tableHeaderView setDetailCellData:entity];
           }
           else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitUnFollow_Code].location != NSNotFound){
               NSDictionary *info =  [extroInfo valueForKey:API_Back_ExtroInfo];
@@ -151,7 +163,7 @@
               }
               //self.followBlock(YES);
               [self showAlertToast:@"取消关注成功"];
-              [self.listView reloadData];
+              [self.tableHeaderView setDetailCellData:entity];
           } else if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitLaster_Code].location != NSNotFound){
               self.lasterPriceEntity = [BitDetailsLasterPriceEntity mj_objectWithKeyValues:returnParam[@"info"]];
               if (self.lasterPriceEntity){
@@ -165,7 +177,8 @@
                   self.priceEntity = price;
                   
               }
-              [self.listView reloadData];
+              [self.tableHeaderView setDetailCellData:self.detailsEntity];
+              [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
           }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
         @strongify(self)
@@ -200,35 +213,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (self.detailsEntity != nil){
-        return 3 + self.webArray.count;
+        return 1 + self.webArray.count;
     }
     return 0;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row == 0){
-       static NSString *followIdentifier = @"followIdentifier";
-        BitDetailsCell *cell = [tableView dequeueReusableCellWithIdentifier:followIdentifier];
-        if (!cell){
-            cell = [[BitDetailsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:followIdentifier];
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            [cell setDelegate:self];
-        }
-        [cell setDetailCellData:self.detailsEntity];
-        return cell;
-    }else if (indexPath.row == 1){
-        static NSString *linechareIdentifier = @"linechareIdentifier";
-        BitLineChartCell *cell = [tableView dequeueReusableCellWithIdentifier:linechareIdentifier];
-        if (!cell){
-            cell = [[BitLineChartCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:linechareIdentifier];
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            [cell setDelegate:self];
-        }
-        [cell setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
-        return cell;
-        
-    }else if (indexPath.row == 2){
+  if (indexPath.row == 0){
        static NSString *textIdentifier = @"textIdentifier";
         BitDetailsTextCell *cell = [tableView dequeueReusableCellWithIdentifier:textIdentifier];
         if (!cell){
@@ -245,7 +237,7 @@
             cell = [[BitDetailsWebCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:webIdentifier];
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         }
-        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-1];
         [cell setWebCellData:entity];
         
         return cell;
@@ -254,21 +246,17 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0){
-        return 130;
-    }else if (indexPath.row == 1){
-        return 240;
-    }else if (indexPath.row == 2){
         return 80 + [self.detailsEntity.btc_desc boundingRectWithSize:CGSizeMake(ScreenWidth - 30, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size.height;
     } else {
-        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-1];
         
         return 20 + [entity.v boundingRectWithSize:CGSizeMake(ScreenWidth - 250, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.height;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row >= 3){
-        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-3];
+    if (indexPath.row >= 1){
+        BitPlatformEntity *entity = [self.webArray objectAtIndex:indexPath.row-1];
         if ([entity.v isValidUrl]){
             BitWebController *webController = [[BitWebController alloc] init];
             [webController setHaveMyNavBar:YES];
@@ -278,13 +266,21 @@
     }
  }
 
+-(void)tableView:(UITableView* )tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row >= 1){
+        [cell setBackgroundColor:indexPath.row%2 != 0 ? k_FAFAFA : [UIColor whiteColor]];
+    }
+}
+
+
 - (void)selectSegmentIndex:(NSInteger)index withKey:(NSString *)key {
     self.requestKey = [key copy];
     [self requesPricebitId:self.bitId withtype:key];
 }
 
 
-- (void)selectDetailsCell:(BitDetailsCell *)cell withFollow:(BOOL)follow {
+- (void)selectDetailsHeader:(BitDetailsHeaderView *)header withFollow:(BOOL)follow {
     if (follow){
         [self.detailsViewModel requestFollow:@{@"device_id":[NSString getDeviceIDInKeychain],@"btc_id":self.detailsEntity.btc_id} withBackParam:@{@"btc":self.detailsEntity} withNet:YES];
     }else {

@@ -77,6 +77,7 @@
     if (!_lineView){
         _lineView = [[UIView alloc] initWithFrame:CGRectZero];
         [_lineView setBackgroundColor:k_4471BC];
+        [_destailLabe setFont:SYS_FONT(16)];
     }
     return _lineView;
 }
@@ -93,7 +94,7 @@
         _destailLabe  = [[UILabel alloc] initWithFrame:CGRectZero];
         [_destailLabe setTextColor:k_999999];
         [_destailLabe setNumberOfLines:0];
-        [_destailLabe setFont:SYS_FONT(16)];
+        [_destailLabe setFont:SYS_FONT(14)];
     }
     return _destailLabe;
 }

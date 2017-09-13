@@ -18,6 +18,7 @@
 @property (nonatomic ,assign)NSInteger currenIndex;
 @property (nonatomic,strong)MSLoadingView * loadingView;
 @property (nonatomic ,strong)NSMutableDictionary *pathData;
+@property (nonatomic ,assign)BOOL is_Refreshing;
 @end
 
 @implementation BHomeCell
@@ -67,6 +68,7 @@
 }
 
 - (void)headerWithRefreshing{
+    self.is_Refreshing = YES;
     if (_delegate != nil && [_delegate respondsToSelector:@selector(refreshingData:)]){
         [self.delegate refreshingData:self];
     }
@@ -98,10 +100,12 @@
         cell = [[BFollowCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifer];
         [cell setDelegate:self];
     }
-    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",indexPath.row]] boolValue];
-    [cell setFollowData:[self.data objectAtIndex:indexPath.row] withDisPlay:display];
+    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] boolValue];
+    [cell setFollowData:[self.data objectAtIndex:indexPath.row] withDisPlay:display withAnimation:self.is_Refreshing];
     return cell;
 }
+
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 72;
@@ -117,10 +121,15 @@
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     BitHomeHeaderView *headerView = [[BitHomeHeaderView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 41)];
-    [headerView setBackgroundColor:k_FFFFFF];
+    [headerView setBackgroundColor:k_EFEFF4];
     [headerView.titleLabel setText:@"名称"];
     [headerView.priceLabel setText:@"当前价"];
-    [headerView.roseLabel setText:@"涨跌幅"];
+    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] boolValue];
+    if (display){
+        [headerView.roseLabel setText:@"交易量"];
+    }else {
+        [headerView.roseLabel setText:@"涨跌幅"];
+    }
     return headerView;
 }
 
@@ -134,16 +143,27 @@
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     if (self.currenIndex == 0  && self.data.count < 5 && self.data.count > 0){
-        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 72)];
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 90)];
+        UIView *aview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, ScreenWidth, 80)];
+        [aview setBackgroundColor:[UIColor whiteColor]];
+        [footerView addSubview:aview];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [button setFrame:CGRectMake(0, 0, ScreenWidth, 72)];
+        [button setBackgroundColor:[UIColor whiteColor]];
+        [button setFrame:CGRectMake(0, 10, ScreenWidth, 40)];
         [button setImage:[UIImage imageNamed:@"search_footerfollow_icon"] forState:UIControlStateNormal];
-        [button setTitle:@"点击添加币种" forState:UIControlStateNormal];
+        [button setTitle:@"添加币种" forState:UIControlStateNormal];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, -10)];
         [button setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 0)];
         [button setTitleColor:k_9596AB forState:UIControlStateNormal];
         [button addTarget:self action:@selector(searchBit:) forControlEvents:UIControlEventTouchUpInside];
-        [footerView addSubview:button];
+        UILabel *alabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, ScreenWidth, 20)];
+        [alabel setBackgroundColor:[UIColor whiteColor]];
+        [alabel setText:@"体验智能预警超强功能"];
+        [alabel setTextColor:k_999999];
+        [alabel setFont:SYS_FONT(12)];
+        [alabel setTextAlignment:NSTextAlignmentCenter];
+        [aview addSubview:alabel];
+        [aview addSubview:button];
         
         return footerView;
         
@@ -155,7 +175,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if (self.currenIndex == 0 && self.data.count < 5){
-        return 72;
+        return 80;
     }
     
     return 0;
@@ -165,6 +185,13 @@
     
     [cell setSeparatorInset:UIEdgeInsetsZero];
     [cell setLayoutMargins:UIEdgeInsetsZero];
+    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+        //end of loading
+        dispatch_async(dispatch_get_main_queue(),^{
+            self.is_Refreshing = NO;
+        });
+    }
+
 }
 
 
@@ -175,10 +202,8 @@
 }
 
 - (void)didSelect:(BFollowCell *)cell withDisPlay:(BOOL)display {
-    NSIndexPath *path = [self.cellTable indexPathForCell:cell];
-    [self.pathData setObject:[NSNumber numberWithBool:display] forKey:[NSString stringWithFormat:@"%ld",path.row]];
-    [self.cellTable reloadRowsAtIndexPaths:@[path]
-                          withRowAnimation:UITableViewRowAnimationNone];
+     [self.pathData setObject:[NSNumber numberWithBool:display] forKey:[NSString stringWithFormat:@"%ld",self.currenIndex]];
+    [self.cellTable reloadData];
 }
 
 
@@ -192,6 +217,7 @@
         [_cellTable setShowsHorizontalScrollIndicator:NO];
         [_cellTable setSeparatorInset:UIEdgeInsetsZero];
         [_cellTable setLayoutMargins:UIEdgeInsetsZero];
+        [_cellTable setBackgroundColor:k_EFEFF4];
         _cellTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
     }
     return _cellTable;

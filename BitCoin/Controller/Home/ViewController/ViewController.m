@@ -22,7 +22,7 @@
 #import "BitFeatureView.h"
 
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,BHomeCellDelegate,MSLoadingViewDelegate>
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,BHomeCellDelegate,MSLoadingViewDelegate,BitFeatureViewDelegate>
 @property (nonatomic ,strong)UITableView *tableView;
 @property (nonatomic ,strong)HMSegmentedControl *segmentedControl;
 @property (nonatomic ,strong)BHomeViewModel *homeViewModel;
@@ -31,6 +31,7 @@
 @property (nonatomic , strong)dispatch_source_t timer;
 @property (nonatomic ,strong)NSMutableDictionary *requstTimeData;
 @property(nonatomic,strong)MSLoadingView * loadingView;
+@property (nonatomic ,strong)BitFeatureView *featureView;
 @end
 
 @implementation ViewController
@@ -38,6 +39,7 @@
 - (void)viewDidLoad {
     self.haveMyNavBar = YES;
     [super viewDidLoad];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     [self setupViews];
     [self setViewModle];
     [self requestHttp];
@@ -45,11 +47,40 @@
     [self.view addSubview:self.loadingView];
     
     
-//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//    UIView *aview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-//    [aview setBackgroundColor:[UIColor redColor]];
-//    [window addSubview:aview];
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    _featureView = [[BitFeatureView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    [_featureView.bgImageView setImage:[UIImage imageNamed:@"lunchScreen"]];
+    [window addSubview:_featureView];
+    [_featureView setDelegate:self];
+    [self performSelector:@selector(removeBgView) withObject:nil afterDelay:2];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotification:) name:@"pushnotification" object:nil];
 
+}
+
+
+- (void)removeBgView{
+    if (_featureView){
+        [_featureView.bgImageView removeFromSuperview];
+        NSArray *featureData = [KUserdefaults objectForKey:@"appStartData"];
+        if (featureData.count > 2){
+            [_featureView setFeatureData:[BitEnity mj_objectArrayWithKeyValuesArray:featureData]];
+            [self performSelector:@selector(removeFeatureView:) withObject:nil afterDelay:2];
+        } else {
+            [_featureView removeFromSuperview];
+        }
+    }
+}
+
+- (void)removeFeatureView:(BitFeatureView *)featrue {
+    if (_featureView){
+        [UIView animateWithDuration:.2 animations:^{
+            [_featureView setCenter:CGPointMake(- ScreenWidth/2, ScreenHeight/2)];
+        } completion:^(BOOL finish){
+            [_featureView removeFromSuperview];
+            _featureView = nil;
+
+        }];
+    }
 }
 
 - (void)setupViews {
@@ -61,7 +92,7 @@
     [button setTitleColor:k_FAFAFA forState:UIControlStateNormal];
     [button.titleLabel setFont:SYS_FONT(18)];
     [button sizeToFit];
-    [button setCenter:CGPointMake(self.navBar.center.x, self.navBar.center.y + 8)];
+    [button setCenter:CGPointMake(self.navBar.center.x, self.navBar.center.y +10)];
     //[titleView addSubview:button];
     [self.navBar addSubview:button];
     
@@ -101,6 +132,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)pushNotification:(NSNotification *)notification {
+    UIButton *button = (UIButton *)[self.navBar.topItem.leftBarButtonItem customView];
+    [button pp_showBadge];
+}
+
 - (void)setSegmentedData{
     NSMutableArray *bittypArray = [[NSMutableArray alloc] init];
     for(BitClassEntity *entity in self.bitClassData){
@@ -129,7 +165,7 @@
         [self.homeViewModel requesBitHomeList:@[[NSString getDeviceIDInKeychain],type,@"1"] withKey:type net:YES];
 
     } else {
-        if (labs([date second] - [oldDate second]) > 5){
+        if (labs([date second] - [oldDate second]) > 10){
             if (load){
                 [self.HUD showAnimated:YES];
             }
@@ -236,7 +272,16 @@
         {
             return;
         }
+        NSString *requestSring = [extroInfo valueForKey:API_Back_URLCode];
         NSString *key = [extroInfo valueForKey:API_Back_ExtroInfo];
+        if ([requestSring rangeOfString:API_BitHomeList_Code].location != NSNotFound && key != nil){
+            ApiError *error = (ApiError *)retrunParam;
+            if (error.statusCode == 400){
+                [self.bitData setObject:[NSArray array] forKey:key];
+                [self.tableView reloadData];
+            }
+
+        }
          [self endRefreshing:key];
         
         if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitClassInfo_Code])
@@ -261,7 +306,8 @@
 
 }
 
-- (void)gomMessage:(id)sender{
+- (void)gomMessage:(UIButton *)button{
+    [button pp_hiddenBadge];
     BitMessageController *messageVC = [[BitMessageController alloc] init];
     [messageVC setNavBarColor:k_FAFAFA];
     [messageVC setBackImageName:@"nav_back_one"];
@@ -299,9 +345,8 @@
     NSLog(@"Selected index %ld (via UIControlEventValueChanged)", (long)segmentedControl.selectedSegmentIndex);
     NSInteger index = (long)segmentedControl.selectedSegmentIndex;
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
-    BHomeCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    [cell beginRefreshing];
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:YES withRefrensh:NO];
+   // BHomeCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:NO withRefrensh:NO];
     
 }
 
@@ -331,7 +376,7 @@
 
 - (void)refreshingData:(BHomeCell *)homecell {
     NSIndexPath *path = [self.tableView indexPathForCell:homecell];
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val] page:1 withLoad:YES withRefrensh:YES];
+    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val] page:1 withLoad:NO withRefrensh:YES];
 }
 
 - (void)addBitFollow{
@@ -348,7 +393,7 @@
     if (!_segmentedControl){
         _segmentedControl = [[HMSegmentedControl alloc] initWithSectionTitles:nil];
         _segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth;
-        _segmentedControl.frame = CGRectMake(0, 60, ScreenWidth, 40);
+        _segmentedControl.frame = CGRectMake(0, 66, ScreenWidth, 40);
         _segmentedControl.segmentEdgeInset = UIEdgeInsetsMake(0, 10, 0, 10);
         _segmentedControl.selectionIndicatorHeight = 2.0f;
         _segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleTextWidthStripe;
@@ -383,7 +428,7 @@
         _tableView.scrollEnabled = YES;
         _tableView.userInteractionEnabled = YES;
         _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.frame = CGRectMake(0, ScreenHeight, ScreenWidth, ScreenHeight-100);
+        _tableView.frame = CGRectMake(0, ScreenHeight, ScreenWidth, ScreenHeight-106);
         _tableView.allowsSelection = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }

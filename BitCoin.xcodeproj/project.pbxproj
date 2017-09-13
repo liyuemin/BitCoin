@@ -90,13 +90,13 @@
 		9413A2C51F59692F00078301 /* BitWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2C41F59692F00078301 /* BitWebController.m */; };
 		9413A2C91F596ACA00078301 /* MSWebViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2C81F596ACA00078301 /* MSWebViewModel.m */; };
 		9413A2CC1F5A745200078301 /* BitLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2CB1F5A745200078301 /* BitLineChartView.m */; };
-		949FF4BD1F67EA4300C8055E /* LaunchScreen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 949FF4BB1F67EA4300C8055E /* LaunchScreen.jpg */; };
 		94AE9AE91F615534004F2E3D /* BitDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AE81F615534004F2E3D /* BitDetailsCell.m */; };
 		94AE9AEC1F626815004F2E3D /* BitPlatformEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AEB1F626815004F2E3D /* BitPlatformEntity.m */; };
 		94AE9AF61F6281AC004F2E3D /* BitFeatureController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AF51F6281AC004F2E3D /* BitFeatureController.m */; };
 		94AE9AF91F6283D2004F2E3D /* BitFeatureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AF81F6283D2004F2E3D /* BitFeatureView.m */; };
 		94AE9AFC1F62880C004F2E3D /* BitDetailsLasterPriceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AFB1F62880C004F2E3D /* BitDetailsLasterPriceEntity.m */; };
 		94AE9AFF1F66281F004F2E3D /* BitUpDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AFE1F66281F004F2E3D /* BitUpDateView.m */; };
+		94FB960C1F69398000357472 /* BitDetailsHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94FB960B1F69398000357472 /* BitDetailsHeaderView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -277,7 +277,6 @@
 		9413A2C81F596ACA00078301 /* MSWebViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSWebViewModel.m; sourceTree = "<group>"; };
 		9413A2CA1F5A745200078301 /* BitLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitLineChartView.h; sourceTree = "<group>"; };
 		9413A2CB1F5A745200078301 /* BitLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitLineChartView.m; sourceTree = "<group>"; };
-		949FF4BC1F67EA4300C8055E /* Base */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Base; path = Base.lproj/LaunchScreen.jpg; sourceTree = "<group>"; };
 		94AE9AE71F615534004F2E3D /* BitDetailsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitDetailsCell.h; sourceTree = "<group>"; };
 		94AE9AE81F615534004F2E3D /* BitDetailsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitDetailsCell.m; sourceTree = "<group>"; };
 		94AE9AEA1F626815004F2E3D /* BitPlatformEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitPlatformEntity.h; sourceTree = "<group>"; };
@@ -290,6 +289,8 @@
 		94AE9AFB1F62880C004F2E3D /* BitDetailsLasterPriceEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitDetailsLasterPriceEntity.m; sourceTree = "<group>"; };
 		94AE9AFD1F66281F004F2E3D /* BitUpDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitUpDateView.h; sourceTree = "<group>"; };
 		94AE9AFE1F66281F004F2E3D /* BitUpDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitUpDateView.m; sourceTree = "<group>"; };
+		94FB960A1F69398000357472 /* BitDetailsHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitDetailsHeaderView.h; sourceTree = "<group>"; };
+		94FB960B1F69398000357472 /* BitDetailsHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitDetailsHeaderView.m; sourceTree = "<group>"; };
 		D822B9534C9A09439EB0B455 /* Pods-BitCoin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BitCoin.release.xcconfig"; path = "Pods/Target Support Files/Pods-BitCoin/Pods-BitCoin.release.xcconfig"; sourceTree = "<group>"; };
 		DAE7ABC5AAB2518522FCB651 /* libPods-BitCoin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BitCoin.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -400,7 +401,6 @@
 				9413A17F1F4AE20F00078301 /* Main.storyboard */,
 				9413A1821F4AE20F00078301 /* Assets.xcassets */,
 				9413A1841F4AE20F00078301 /* LaunchScreen.storyboard */,
-				949FF4BB1F67EA4300C8055E /* LaunchScreen.jpg */,
 				9413A1871F4AE20F00078301 /* Info.plist */,
 				9413A1761F4AE20F00078301 /* Supporting Files */,
 			);
@@ -642,6 +642,8 @@
 				9413A2CB1F5A745200078301 /* BitLineChartView.m */,
 				94AE9AFD1F66281F004F2E3D /* BitUpDateView.h */,
 				94AE9AFE1F66281F004F2E3D /* BitUpDateView.m */,
+				94FB960A1F69398000357472 /* BitDetailsHeaderView.h */,
+				94FB960B1F69398000357472 /* BitDetailsHeaderView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1059,7 +1061,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9413A1861F4AE20F00078301 /* LaunchScreen.storyboard in Resources */,
-				949FF4BD1F67EA4300C8055E /* LaunchScreen.jpg in Resources */,
 				9413A2131F4EBC0100078301 /* MShareConfigure.plist in Resources */,
 				9413A1831F4AE20F00078301 /* Assets.xcassets in Resources */,
 				9413A1811F4AE20F00078301 /* Main.storyboard in Resources */,
@@ -1186,6 +1187,7 @@
 				9413A1E61F4D786A00078301 /* BDetailsController.m in Sources */,
 				9413A23C1F4EC01D00078301 /* MSFileHandle.m in Sources */,
 				9413A2511F53C5ED00078301 /* BitDetailsViewModel.m in Sources */,
+				94FB960C1F69398000357472 /* BitDetailsHeaderView.m in Sources */,
 				9413A21F1F4EBD6D00078301 /* MViewTools.m in Sources */,
 				9413A2391F4EBF7D00078301 /* MSAppSetManager.m in Sources */,
 				9413A2C91F596ACA00078301 /* MSWebViewModel.m in Sources */,
@@ -1262,14 +1264,6 @@
 				9413A1851F4AE20F00078301 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		949FF4BB1F67EA4300C8055E /* LaunchScreen.jpg */ = {
-			isa = PBXVariantGroup;
-			children = (
-				949FF4BC1F67EA4300C8055E /* Base */,
-			);
-			name = LaunchScreen.jpg;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

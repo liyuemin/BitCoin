@@ -15,6 +15,13 @@
     [self dataWithTaskUrl:API_Base Method:@"POST" Param:param Sender:senderDic];
 }
 
+- (void)requestStart {
+    NSMutableDictionary *senderDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:API_BitStart_Code,API_Back_URLCode,nil];
+    
+    [self dataWithTaskUrl:API_Base Method:@"GET" Param:nil Sender:senderDic];
+}
+
+
 - (NSURLSessionDataTask *)dataWithTaskUrl:(NSString *)url Method:(NSString *)method Param:(id )param Sender:(NSDictionary *)sender
 {
     NSURLSessionDataTask *task = [super dataWithTaskUrl:url Method:method Param:param Sender:sender];

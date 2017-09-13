@@ -39,6 +39,7 @@ extern NSString *const API_BitMessage_Code;
 extern NSString *const API_BitPrice_Code;
 extern NSString *const API_BitUnFollow_Code;
 extern NSString *const API_BitLaster_Code;
+extern NSString *const API_BitStart_Code;
 
 #pragma mark - 登录
 extern NSString *const API_Login_Code;

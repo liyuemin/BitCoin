@@ -56,7 +56,7 @@
 
 - (void)upConstraintsView:(CGSize)size{
     [self.webLabel mas_updateConstraints:^(MASConstraintMaker *maker){
-        maker.width.mas_equalTo(size.width + 20);
+        maker.width.mas_equalTo(size.width);
     }];
 }
 
@@ -80,7 +80,7 @@
 -(UILabel *)titleLabel{
     if (!_titleLabel){
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        [_titleLabel setTextColor:k_999999];
+        [_titleLabel setTextColor:k_3C3C3C];
         [_titleLabel setLineBreakMode:NSLineBreakByCharWrapping];
         [_titleLabel setNumberOfLines:0];
         [_titleLabel setFont:SYS_FONT(14)];

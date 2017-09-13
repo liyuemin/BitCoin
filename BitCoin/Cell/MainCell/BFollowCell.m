@@ -130,10 +130,11 @@
     return _preButton;
 }
 
-- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display {
+- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display withAnimation:(BOOL)animation {
     [self.titleLabel setText:entity.btc_title_display];
     [self.desLable setText:entity.btc_trade_from_name];
     self.is_disPlay = display;
+    
     if (display){
         [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf",[entity.rising_val floatValue]] forState:UIControlStateNormal];
 
@@ -143,13 +144,25 @@
     }
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
         if ([entity.rising floatValue] > 0){
-        [self.preButton setBackgroundColor:k_D0402D];
-        [self.moneyLabel setTextColor:k_D0402D];
+            [self.preButton setBackgroundColor:k_D0402D];
+            [self.moneyLabel setTextColor:k_D0402D];
     }else {
+         [self.moneyLabel setTextColor:k_17B03E];
         [self.preButton setBackgroundColor:k_17B03E];
-        [self.moneyLabel setTextColor:k_17B03E];
     }
-
+    if (animation){
+        [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+            //执行动画
+            self.preButton.alpha = 0;
+            
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [UIView animateWithDuration:1 animations:^{
+                    self.preButton.alpha = 1.0;
+                }];
+            }
+        }];
+    }
 }
 
 - (void)clictButton:(UIButton *)button {

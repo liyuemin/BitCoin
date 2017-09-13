@@ -113,7 +113,7 @@
         case MSNoResultShowreelType:
         {
             [self reloadRetryBtn];
-             [self reloadUpLabelWithName:@"点击添加币种\n体验智能预警超强功能"];
+             [self reloadUpLabelWithName:@"点击添加币种\n体验超强币价智警功能"];
         }
         default:
             break;
@@ -220,8 +220,8 @@
     if (!_centerLabel)
     {
         _centerLabel = [[UILabel alloc]init];
-        _centerLabel.textColor = k_666666;
-        _centerLabel.font = SYS_FONT(15);
+        _centerLabel.textColor = k_9596AB;
+        _centerLabel.font = SYS_FONT(14);
         _centerLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _centerLabel;

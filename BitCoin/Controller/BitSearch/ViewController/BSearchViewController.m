@@ -54,7 +54,7 @@
     
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    UIView *searchView = [[UIView alloc]initWithFrame:CGRectMake(0, 7, ScreenWidth-75, 30)];
+    UIView *searchView = [[UIView alloc]initWithFrame:CGRectMake(15, 27, ScreenWidth-80, 30)];
     [searchView setBackgroundColor:[UIColor whiteColor]];
     [searchView.layer setCornerRadius:2];
     [searchView.layer setBorderWidth:1];
@@ -71,13 +71,15 @@
     
     UIButton * rightBnt = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightBnt setTitle:@"取消" forState:UIControlStateNormal];
+    [rightBnt.titleLabel setFont:SYS_FONT(16)];
     [rightBnt setTitleColor:k_5080D8 forState:UIControlStateNormal];
     [rightBnt addTarget:self action:@selector(cancelSearch:) forControlEvents:UIControlEventTouchUpInside];
     [rightBnt sizeToFit];
     UIBarButtonItem * rightBntItem = [[UIBarButtonItem alloc]initWithCustomView:rightBnt];
     self.navBar.topItem.rightBarButtonItem = rightBntItem;
     [self.navBar.topItem.titleView setBackgroundColor:[UIColor blackColor]];
-    self.navBar.topItem.titleView = searchView;
+    [self.navBar addSubview:searchView];
+    //self.navBar.topItem.titleView = searchView;
     
     [self.view addSubview:self.listView];
     //[self searchBitKeyWork:@"btc"];
@@ -105,7 +107,6 @@
 }
 
 - (void)searchBitKeyWork:(NSString *)word {
-    [self.HUD showAnimated:YES];
     [self.searchViewModel requestSearchWithWord:@{@"device_id":[NSString getDeviceIDInKeychain],@"keyword":word} withNet:YES];
     NSLog(@"%@",word);
 }
@@ -136,7 +137,7 @@
             if (entity){
                 [entity setIs_follow:YES];
             }
-            self.followBlock(YES);
+           // self.followBlock(YES);
             [self showAlertToast:@"关注成功"];
             [self.listView reloadData];
         }
@@ -164,7 +165,6 @@
                     [self.searchArray removeAllObjects];
                 }
                 [self.listView reloadData];
-               [self showAlertToast:@"没有搜索到结构"];
                 
             }
         }
@@ -202,6 +202,7 @@
         BitSearchHotWordCell *cell = [tableView dequeueReusableCellWithIdentifier:hotIdentifier];
         if (!cell){
             cell = [[BitSearchHotWordCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:hotIdentifier];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             [cell setDelegate:self];
         }
         
@@ -221,6 +222,7 @@
         if (!cell){
             cell = [[BitSearchResultCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchIdentifier];
             [cell setDelegate:self];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         }
         BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
         [cell setCellData:entity withkey:self.searchField.text];
@@ -248,7 +250,9 @@
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
         
         UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, ScreenWidth - 15, 40)];
+        [headerLabel setBackgroundColor:[UIColor whiteColor]];
         [headerLabel setTextColor:k_B5B5B5];
+        [headerLabel setFont:SYS_FONT(16)];
         [headerLabel setText:@"大家都在搜"];
         [headerView addSubview:headerLabel];
         return headerView;
@@ -257,13 +261,15 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
-    BDetailsController *detailsVc = [[BDetailsController alloc] init];
-    [detailsVc setBitId:entity.btc_id];
-    detailsVc.haveMyNavBar = YES;
-    [detailsVc setNavititle:entity.btc_title_display];
-    [self.navigationController pushViewController:detailsVc animated:YES];
-
+    if (_isSarch){
+        BitSearchResultEntity *entity = [self.searchArray objectAtIndex:indexPath.row];
+        BDetailsController *detailsVc = [[BDetailsController alloc] init];
+        [detailsVc setBitId:entity.btc_id];
+        detailsVc.haveMyNavBar = YES;
+        [detailsVc setNavititle:entity.btc_title_display];
+        [self.navigationController pushViewController:detailsVc animated:YES];
+    }
+    
     
 }
 
@@ -307,7 +313,19 @@
 }
 
 -(void)textFieldEditChanged:(UITextField *)textField{
-    [self searchBitKeyWork:textField.text];
+    if (textField.text.length > 0){
+        [self searchBitKeyWork:textField.text];
+    }else {
+        if (self.searchArray.count > 0){
+            [self.searchArray removeAllObjects];
+        }
+        [self.listView reloadData];
+
+    }
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    return YES;
 }
 
 
@@ -321,12 +339,12 @@
 
 -(UITextField *)searchField {
     if (!_searchField){
-        _searchField = [[UITextField alloc] initWithFrame:CGRectMake(28, 3, ScreenWidth - 60, 26)];
+        _searchField = [[UITextField alloc] initWithFrame:CGRectMake(28, 3, ScreenWidth - 110, 26)];
         [_searchField setClearButtonMode:UITextFieldViewModeAlways];
         [_searchField setReturnKeyType:UIReturnKeyDone];
         [_searchField addTarget:self action:@selector(textFieldEditChanged:) forControlEvents:UIControlEventEditingChanged];
         [_searchField setDelegate:self];
-        [_searchField setPlaceholder:@"搜索"];
+        [_searchField setPlaceholder:@"输入你想要查找的币种"];
         
     }
     return _searchField;

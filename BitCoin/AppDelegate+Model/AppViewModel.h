@@ -10,4 +10,5 @@
 
 @interface AppViewModel : BaseViewModel
 - (void)requestAPNS:(NSDictionary *)param;
+- (void)requestStart;
 @end

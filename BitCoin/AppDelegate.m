@@ -25,6 +25,8 @@
     if ([KUserdefaults boolForKey:@"GeTuiPushType"]){
         [self requestAPNS:[KUserdefaults objectForKey:@"GeTuiclientId"]];
     }
+    [self setViewModelBlock];
+    [self.appViewModel requestStart];
     return YES;
 }
 
@@ -185,7 +187,7 @@
     if (payloadData) {
         payloadMsg = [[NSString alloc] initWithBytes:payloadData.bytes length:payloadData.length encoding:NSUTF8StringEncoding];
     }
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"pushnotification" object:nil];
     NSString *msg = [NSString stringWithFormat:@"taskId=%@,messageId:%@,payloadMsg:%@%@",taskId,msgId, payloadMsg,offLine ? @"<离线消息>" : @""];
     NSLog(@"\n>>>[GexinSdk ReceivePayload]:%@\n\n", msg);
 }
@@ -201,6 +203,10 @@
         if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitANPSRegister_Code]){
             [KUserdefaults setBool:NO forKey:@"GeTuiPushType"];
             [KUserdefaults synchronize];
+        } else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitStart_Code]){
+            [KUserdefaults setObject:returnParam forKey:@"appStartData"];
+            [KUserdefaults synchronize];
+            
         }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
         @strongify(self)

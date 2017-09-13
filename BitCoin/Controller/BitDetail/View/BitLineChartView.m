@@ -184,10 +184,18 @@
             }
 
         }
+        if ([self.lasterPrice.btc_price floatValue] > _maxPointY){
+            _maxPointY =  [self.lasterPrice.btc_price floatValue];
+            [self creatHorizontalLabel];
+        }
+        if ([self.lasterPrice.btc_price floatValue] < _minPointY){
+            _minPointY = [self.lasterPrice.btc_price floatValue];
+            [self creatHorizontalLabel];
+        }
     }
+    
     if (self.dataArray.count > 0 && _currentTimeType != self.timeType){
         [self creatVerticalLabel];
-        [self creatHorizontalLabel];
         _currentTimeType = self.timeType;
     }
 }
