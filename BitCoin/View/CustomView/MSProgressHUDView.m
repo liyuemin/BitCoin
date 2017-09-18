@@ -29,7 +29,7 @@
 {
     if (self = [super initWithFrame:frame])
     {
-        //[self setUpView];
+        [self setUpView];
         self.backgroundColor = [UIColor clearColor];
     }
     return self;
@@ -94,22 +94,23 @@
 
 #pragma mark - Private methods
 
-//- (void)setUpView
-//{
-//    [self addSubview:self.loadingImageView];
-//    
-//    [self.loadingImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.centerX.mas_equalTo(self);
-//        make.centerY.mas_equalTo(self).offset(-40);
-//        make.width.mas_equalTo(40);
-//        make.height.mas_equalTo(40);
-//    }];
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"mai-loading" ofType:@"gif"];
-////    UIImage *loadingImage = [UIImage sd_animatedGIFWithData:[NSData dataWithContentsOfFile:path]];
-//    UIImage *loadingImage = [UIImage sdm_animatedGIFNamed:@"mai-loading"];
-//
-//    self.loadingImageView.image = loadingImage;
-//}
+- (void)setUpView
+{
+    [self addSubview:self.loadingImageView];
+    
+    [self.loadingImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(self);
+        make.centerY.mas_equalTo(self).offset(-40);
+        make.width.mas_equalTo(40);
+        make.height.mas_equalTo(40);
+    }];
+    //NSString *path = [[NSBundle mainBundle] pathForResource:@"bitcion" ofType:@"gif"];
+//    UIImage *loadingImage = [UIImage sd_animatedGIFWithData:[NSData dataWithContentsOfFile:path]];
+    UIImage *loadingImage = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"bitcion.gif"]];
+    
+
+    self.loadingImageView.image = loadingImage;
+}
 
 #pragma mark - GIF
 
@@ -118,7 +119,7 @@
     if (!_loadingImageView)
     {
         _loadingImageView = [[UIImageView alloc] init];
-        _loadingImageView.backgroundColor = [UIColor clearColor];
+        _loadingImageView.backgroundColor = k_EFEFF4;
     }
     return _loadingImageView;
 }

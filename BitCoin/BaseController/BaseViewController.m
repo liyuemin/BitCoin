@@ -264,6 +264,16 @@
     if (!_HUD){
         _HUD = [[MBProgressHUD alloc] initWithView:self.view];
         [self.view addSubview:_HUD];
+//        [_HUD setMode:MBProgressHUDModeCustomView];
+//       UIImage *image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"refrensh1.png"]];
+//        UIImageView *imgView = [[UIImageView alloc] initWithImage:image];
+//        _HUD.customView = imgView;
+//        CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+//        anima.toValue = @(M_PI*2);
+//        anima.duration = 1.0f;
+//        anima.repeatCount = 10;
+//        [imgView.layer addAnimation:anima forKey:nil];
+//        _HUD.animationType = MBProgressHUDAnimationFade;
         _HUD.delegate = self;
         [_HUD.superview bringSubviewToFront:_HUD];
     }

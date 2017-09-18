@@ -74,12 +74,20 @@
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:[entity.create_time longLongValue]];
     NSDate *currentDate = [NSDate date];
     if ([date year] == [currentDate year]){
-        [self.desLabel setText:[NSString stringWithFormat:@"%@",[date stringWithFormat:@"HH:mm:ss"]]];
+        [self.desLabel setText:[NSString stringWithFormat:@"%@-%@   %@",[self getDoubleIntSring:[date month]],[self getDoubleIntSring:[date day]],[date stringWithFormat:@"HH:mm"]]];
     } else {
         [self.desLabel setText:[NSString stringWithFormat:@"%@",[date stringWithFormat:@"yyyy/MM/dd HH:mm"]]];
 
     }
 
+}
+
+- (NSString *)getDoubleIntSring:(NSInteger )terger{
+    if (terger >= 10){
+        return [NSString stringWithFormat:@"%ld",terger];
+    }else {
+        return [NSString stringWithFormat:@"0%ld",terger];
+    }
 }
 
 @end

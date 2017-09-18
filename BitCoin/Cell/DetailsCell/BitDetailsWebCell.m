@@ -8,6 +8,10 @@
 
 #import "BitDetailsWebCell.h"
 #import "NSString+AFNetWorkAdditions.h"
+#import "BitLineLabel.h"
+
+#define ZhGridTag  456
+
 @interface BitDetailsWebCell()
 @property (nonatomic ,strong)UILabel *titleLabel;
 @property (nonatomic ,strong)UILabel *webLabel;
@@ -41,40 +45,44 @@
 - (void)setConstraintsView{
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *maker){
         maker.left.mas_equalTo(self.contentView).offset(15);
-        maker.top.mas_equalTo(self.contentView).offset(10);
+        maker.top.mas_equalTo(self.contentView).offset(15);
         maker.width.mas_equalTo(200);
-        maker.bottom.mas_equalTo(self.contentView).offset(-10);
+        maker.bottom.mas_equalTo(self.contentView).offset(-15);
         
     }];
     [self.webLabel mas_makeConstraints:^(MASConstraintMaker *maker){
         maker.right.mas_equalTo(self.contentView).offset(-15);
-        maker.top.mas_equalTo(self.contentView).offset(10);
+        maker.centerY.mas_equalTo(self.contentView.mas_centerY);
         maker.width.mas_equalTo(ScreenWidth - 250);
-        maker.bottom.mas_equalTo(self.contentView).offset(-10);
+        maker.height.mas_equalTo(20);
     }];
+
 }
 
 - (void)upConstraintsView:(CGSize)size{
     [self.webLabel mas_updateConstraints:^(MASConstraintMaker *maker){
         maker.width.mas_equalTo(size.width);
+        maker.height.mas_equalTo(size.height);
     }];
+    
+
 }
 
 
 - (void)setWebCellData:(BitPlatformEntity *)entity {
     
-    [self upConstraintsView:[entity.v boundingRectWithSize:CGSizeMake(ScreenWidth - 250, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size];
+    CGSize size = [entity.v boundingRectWithSize:CGSizeMake(ScreenWidth - 250, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+    
+    [self upConstraintsView:size];
     [self.titleLabel setText:entity.k];
+    [self.webLabel setText:entity.v];
     if ([entity.v isValidUrl]){
         NSMutableAttributedString *content = [[NSMutableAttributedString alloc]initWithString:entity.v];
         NSRange contentRange = {0,[content length]};
+        //[content addAttributes:@{NSUnderlineStyleAttributeName:[NSNumber numberWithInteger:NSUnderlineStyleSingle],NSUnderlineColorAttributeName:k_4471BC} range:contentRange];
         [content addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:contentRange];
         [self.webLabel setAttributedText:content];
-
-    }else {
-      [self.webLabel setText:entity.v];
     }
-
 }
 
 -(UILabel *)titleLabel{
@@ -99,5 +107,6 @@
     }
     return _webLabel;
 }
+
 
 @end

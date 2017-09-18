@@ -90,6 +90,8 @@
 		9413A2C51F59692F00078301 /* BitWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2C41F59692F00078301 /* BitWebController.m */; };
 		9413A2C91F596ACA00078301 /* MSWebViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2C81F596ACA00078301 /* MSWebViewModel.m */; };
 		9413A2CC1F5A745200078301 /* BitLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9413A2CB1F5A745200078301 /* BitLineChartView.m */; };
+		94164F3B1F6F7CCE00B4B144 /* bitcion.gif in Resources */ = {isa = PBXBuildFile; fileRef = 94164F3A1F6F7CCE00B4B144 /* bitcion.gif */; };
+		94164F3E1F6F945600B4B144 /* BitLineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 94164F3D1F6F945600B4B144 /* BitLineLabel.m */; };
 		94AE9AE91F615534004F2E3D /* BitDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AE81F615534004F2E3D /* BitDetailsCell.m */; };
 		94AE9AEC1F626815004F2E3D /* BitPlatformEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AEB1F626815004F2E3D /* BitPlatformEntity.m */; };
 		94AE9AF61F6281AC004F2E3D /* BitFeatureController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AE9AF51F6281AC004F2E3D /* BitFeatureController.m */; };
@@ -302,6 +304,9 @@
 		9413A2C81F596ACA00078301 /* MSWebViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSWebViewModel.m; sourceTree = "<group>"; };
 		9413A2CA1F5A745200078301 /* BitLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitLineChartView.h; sourceTree = "<group>"; };
 		9413A2CB1F5A745200078301 /* BitLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitLineChartView.m; sourceTree = "<group>"; };
+		94164F3A1F6F7CCE00B4B144 /* bitcion.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = bitcion.gif; sourceTree = "<group>"; };
+		94164F3C1F6F945600B4B144 /* BitLineLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitLineLabel.h; sourceTree = "<group>"; };
+		94164F3D1F6F945600B4B144 /* BitLineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitLineLabel.m; sourceTree = "<group>"; };
 		94AE9AE71F615534004F2E3D /* BitDetailsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitDetailsCell.h; sourceTree = "<group>"; };
 		94AE9AE81F615534004F2E3D /* BitDetailsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitDetailsCell.m; sourceTree = "<group>"; };
 		94AE9AEA1F626815004F2E3D /* BitPlatformEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitPlatformEntity.h; sourceTree = "<group>"; };
@@ -782,6 +787,8 @@
 				9413A2071F4EBC0100078301 /* Share */,
 				9413A20D1F4EBC0100078301 /* ZHGridView.h */,
 				9413A20E1F4EBC0100078301 /* ZHGridView.m */,
+				94164F3C1F6F945600B4B144 /* BitLineLabel.h */,
+				94164F3D1F6F945600B4B144 /* BitLineLabel.m */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -999,6 +1006,7 @@
 		94FB960D1F6A314000357472 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				94164F3A1F6F7CCE00B4B144 /* bitcion.gif */,
 				94FB96401F6A35CA00357472 /* refrensh1.png */,
 				94FB96411F6A35CA00357472 /* refrensh2.png */,
 				94FB96421F6A35CA00357472 /* refrensh3.png */,
@@ -1158,6 +1166,7 @@
 				94FB96701F6A35CA00357472 /* refrensh24.png in Resources */,
 				94FB96681F6A35CA00357472 /* refrensh16.png in Resources */,
 				94FB96671F6A35CA00357472 /* refrensh15.png in Resources */,
+				94164F3B1F6F7CCE00B4B144 /* bitcion.gif in Resources */,
 				9413A1811F4AE20F00078301 /* Main.storyboard in Resources */,
 				94FB96711F6A35CA00357472 /* refrensh25.png in Resources */,
 				94FB965D1F6A35CA00357472 /* refrensh5.png in Resources */,
@@ -1254,6 +1263,7 @@
 				9413A2331F4EBF5500078301 /* APIUrlManager.m in Sources */,
 				9413A24E1F502B0500078301 /* BitClassEntity.m in Sources */,
 				94AE9AF61F6281AC004F2E3D /* BitFeatureController.m in Sources */,
+				94164F3E1F6F945600B4B144 /* BitLineLabel.m in Sources */,
 				94AE9AFC1F62880C004F2E3D /* BitDetailsLasterPriceEntity.m in Sources */,
 				9413A27F1F58126B00078301 /* BitSearchResultEntity.m in Sources */,
 				9413A2AE1F59216900078301 /* BitHomeFooterView.m in Sources */,

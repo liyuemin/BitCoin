@@ -39,7 +39,7 @@
 }
 
 - (void)requesMessage:(NSInteger)page{
-    [self.HUD showAnimated:YES];
+    //[self.HUD showAnimated:YES];
     [self.messageViewModel reqeustMessageData:@[[NSString getDeviceIDInKeychain],@"1"] net:YES];
 }
 
@@ -51,7 +51,7 @@
         {
             return;
         }
-        [self.HUD hideAnimated:YES];
+        //[self.HUD hideAnimated:YES];
         [self.listView.mj_header endRefreshing];
         if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitMessage_Code].location != NSNotFound){
             self.listArray = [BitMessageEntity mj_objectArrayWithKeyValuesArray:returnParam];
@@ -68,7 +68,7 @@
         {
             return;
         }
-        [self.HUD hideAnimated:YES];
+       // [self.HUD hideAnimated:YES];
         [self.listView.mj_header endRefreshing];
         if ([[extroInfo valueForKey:API_Back_URLCode] rangeOfString:API_BitMessage_Code].location != NSNotFound){
             [self setLoadingType];
@@ -80,7 +80,7 @@
         {
             return;
         }
-        [self.HUD hideAnimated:YES];
+        //[self.HUD hideAnimated:YES];
         [self.listView.mj_header endRefreshing];
         [self showAlertToast:@"请求网络失败"];
     }];

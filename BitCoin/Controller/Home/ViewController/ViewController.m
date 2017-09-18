@@ -155,7 +155,6 @@
         [self.segmentedControl setBadgeIndex:hotIndex];
     }
     [self.segmentedControl setSectionTitles:bittypArray];
-    [self.tableView reloadData];
     [self segmentedControlChangedValue:self.segmentedControl];
 }
 
@@ -175,7 +174,8 @@
         [self.homeViewModel requesBitHomeList:@[[NSString getDeviceIDInKeychain],type,@"1"] withKey:type net:YES];
 
     } else {
-        if (labs([date second] - [oldDate second]) > 10){
+        NSArray *array = [self.bitData objectForKey:type];
+        if (labs([date second] - [oldDate second]) > 10 || array.count == 0 ){
             if (load){
                 [self.HUD showAnimated:YES];
             }
@@ -259,7 +259,8 @@
             [self.tableView reloadData];
         }else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitClassInfo_Code]){
             self.loadingView.hidden = YES;
-           self.bitClassData = [BitClassEntity mj_objectArrayWithKeyValuesArray:returnParam];
+            self.bitClassData = [BitClassEntity mj_objectArrayWithKeyValuesArray:returnParam];
+            [self.tableView reloadData];
             [self setSegmentedData];
         }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
