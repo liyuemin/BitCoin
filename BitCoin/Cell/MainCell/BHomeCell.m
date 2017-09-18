@@ -46,7 +46,7 @@
     self.data = array;
     self.currenIndex = index;
     
-    if (index == 0 && array.count == 0){
+    if (index == 0 && array == nil){
         if (_loadingView == nil){
             [self.contentView addSubview:self.loadingView];
         }
@@ -100,7 +100,7 @@
         cell = [[BFollowCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifer];
         [cell setDelegate:self];
     }
-    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] boolValue];
+    NSInteger display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] integerValue];
     [cell setFollowData:[self.data objectAtIndex:indexPath.row] withDisPlay:display withAnimation:self.is_Refreshing];
     return cell;
 }
@@ -124,10 +124,12 @@
     [headerView setBackgroundColor:k_EFEFF4];
     [headerView.titleLabel setText:@"名称"];
     [headerView.priceLabel setText:@"当前价"];
-    BOOL display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] boolValue];
-    if (display){
+    NSInteger display = [[self.pathData objectForKey:[NSString stringWithFormat:@"%ld",self.currenIndex]] integerValue];
+    if (display == 1){
+        [headerView.roseLabel setText:@"涨幅额"];
+    }else if(display == 2){
         [headerView.roseLabel setText:@"交易量"];
-    }else {
+    } else {
         [headerView.roseLabel setText:@"涨跌幅"];
     }
     return headerView;
@@ -201,9 +203,9 @@
     }
 }
 
-- (void)didSelect:(BFollowCell *)cell withDisPlay:(BOOL)display {
-     [self.pathData setObject:[NSNumber numberWithBool:display] forKey:[NSString stringWithFormat:@"%ld",self.currenIndex]];
-    [self.cellTable reloadData];
+- (void)didSelect:(BFollowCell *)cell withDisPlay:(NSInteger)display {
+     [self.pathData setObject:[NSNumber numberWithInteger:display] forKey:[NSString stringWithFormat:@"%ld",self.currenIndex]];
+     [self.cellTable reloadData];
 }
 
 
@@ -218,7 +220,24 @@
         [_cellTable setSeparatorInset:UIEdgeInsetsZero];
         [_cellTable setLayoutMargins:UIEdgeInsetsZero];
         [_cellTable setBackgroundColor:k_EFEFF4];
-        _cellTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
+        
+        MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
+        header.stateLabel.hidden = YES;
+        header.lastUpdatedTimeLabel.hidden = YES;
+        NSMutableArray *imageArray = [[NSMutableArray alloc] initWithCapacity:25];
+        for (int i = 1 ; i <= 25 ; i++){
+            UIImage *image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"refrensh%d",i]]];
+            [imageArray addObject:image];
+        }
+        [header setImages:[imageArray subarrayWithRange:NSMakeRange(0, 1)] forState:MJRefreshStateIdle];
+        // 设置即将刷新状态的动画图片（一松开就会刷新的状态）
+        [header setImages:[imageArray subarrayWithRange:NSMakeRange(1, 1)] forState:MJRefreshStatePulling];
+//        // 设置正在刷新状态的动画图片
+        [header setImages:[imageArray subarrayWithRange:NSMakeRange(2, 22)] forState:MJRefreshStateRefreshing];
+        [header setImages:[imageArray subarrayWithRange:NSMakeRange(23, 1)] forState:MJRefreshStateWillRefresh];
+        // 设置header
+        _cellTable.mj_header = header;
+//        _cellTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
     }
     return _cellTable;
 }

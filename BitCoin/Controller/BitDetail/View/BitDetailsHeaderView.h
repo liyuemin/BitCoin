@@ -14,7 +14,8 @@
 @interface BitDetailsHeaderView : UIView
 @property (nonatomic ,unsafe_unretained)id <BitDetailsHeaderViewDelegate>delegate;
 - (void)setDetailCellData:(BitDetailsEntity *)entity;
-- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key withLaster:(BitDetailsPriceEntity *)entity;
+- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key;
+- (void)setBitLineLasterPrice:(BitDetailsPriceEntity *)entity;
 @end
 
 @protocol BitDetailsHeaderViewDelegate <NSObject>

@@ -27,5 +27,7 @@ typedef enum {
 @property (nonatomic ,strong)UIColor *horizontalTextColor;
 @property (nonatomic ,strong)BitDetailsPriceEntity *lasterPrice;
 - (void)clearChartData;
-- (void)setDataArray:(NSArray *)dataArray withLaster:(BitDetailsPriceEntity *)entity;
+//- (void)setDataArray:(NSArray *)dataArray withLaster:(BitDetailsPriceEntity *)entity;
+- (void)setLineData:(NSArray *)lineArray;
+- (void)setCurrentLinePrice:(BitDetailsPriceEntity *)priceEntity;
 @end

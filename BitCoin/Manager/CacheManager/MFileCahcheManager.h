@@ -34,7 +34,6 @@
 - (CGFloat )yyWebImageCacheSize;
 
 -(CGFloat )videoCacheSize;
-
 - (void)cleanImageCacheAndvideoCache;
 
 @end

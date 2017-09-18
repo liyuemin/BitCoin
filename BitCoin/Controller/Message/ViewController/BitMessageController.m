@@ -10,7 +10,7 @@
 #import "BitMessageCell.h"
 #import "BitMessageViewModel.h"
 #import "MSLoadingView.h"
-#import "MJRefreshNormalHeader.h"
+#import "MJRefreshGifHeader.h"
 
 @interface BitMessageController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic ,strong)UITableView *listView;
@@ -23,6 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setMySatusBarStyle:UIStatusBarStyleDefault];
     [self.navBar.topItem setTitle:@"消息"];
     [self.view addSubview:self.listView];
     [self setViewModelCallBack];
@@ -132,8 +133,25 @@
         [_listView setDataSource:self];
         [_listView setSeparatorInset:UIEdgeInsetsZero];
         [_listView setLayoutMargins:UIEdgeInsetsZero];
+        
+        MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
+        header.stateLabel.hidden = YES;
+        header.lastUpdatedTimeLabel.hidden = YES;
+        NSMutableArray *imageArray = [[NSMutableArray alloc] initWithCapacity:25];
+        for (int i = 1 ; i <= 25 ; i++){
+            UIImage *image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"refrensh%d",i]]];
+            [imageArray addObject:image];
+        }
+        [header setImages:[imageArray subarrayWithRange:NSMakeRange(0, 1)] forState:MJRefreshStateIdle];
+        // 设置即将刷新状态的动画图片（一松开就会刷新的状态）
+        //[header setImages:[imageArray subarrayWithRange:NSMakeRange(1, 1)] forState:MJRefreshStatePulling];
+        //        // 设置正在刷新状态的动画图片
+        [header setImages:imageArray forState:MJRefreshStateRefreshing];
+        //[header setImages:[imageArray subarrayWithRange:NSMakeRange(12, 12)] forState:MJRefreshStateWillRefresh];
+        // 设置header
+        _listView.mj_header = header;
 
-        _listView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
+//        _listView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
     }
     return _listView;
 }

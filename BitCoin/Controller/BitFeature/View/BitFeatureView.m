@@ -25,6 +25,8 @@
 @property (nonatomic ,strong)UILabel *threeUnitLabel;
 @property (nonatomic ,strong)UILabel *timeLabel;
 @property (nonatomic ,strong)UIImageView *iconImageView;
+@property (nonatomic ,assign)NSInteger count;
+@property (nonatomic ,strong)NSTimer *timer;
 @end
 
 @implementation BitFeatureView
@@ -35,8 +37,22 @@
         [self setBackgroundColor:k_3C424A];
         [self setUpViews];
         [self setConstraintViews];
+        self.count = 4;
+        _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(apperJupButtonTitle:) userInfo:nil repeats:YES];
     }
     return self;
+}
+
+- (void)apperJupButtonTitle:(NSTimer *)atimer{
+    self.count --;
+    if (self.count >=0){
+        [self.jumpButton setTitle:[NSString stringWithFormat:@"跳过%lds",self.count] forState:UIControlStateNormal];
+    }if (self.count == 0){
+        [self removeAll:self.jumpButton];
+        [_timer invalidate];
+        _timer = nil;
+    }
+
 }
 
 - (void)setUpViews{
@@ -169,7 +185,7 @@
         _jumpButton = [[UIButton alloc] init];
         [_jumpButton addTarget:self action:@selector(removeAll:) forControlEvents:UIControlEventTouchUpInside];
         [_jumpButton setBackgroundColor:k_292929];
-        [_jumpButton setTitle:@"跳过" forState:UIControlStateNormal];
+        [_jumpButton setTitle:@"跳过3s" forState:UIControlStateNormal];
         [_jumpButton.titleLabel setTextColor:k_BDBDBD];
         [_jumpButton.titleLabel setFont:SYS_FONT(14)];
     }

@@ -29,7 +29,7 @@
 - (void)viewDidLoad {
     [self setNoMyNavBarBackBtn:YES];
     [super viewDidLoad];
-    
+    [self setMySatusBarStyle:UIStatusBarStyleDefault];
     
     //监听弹出键盘
     
@@ -97,6 +97,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 - (void)cancelSearch:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];

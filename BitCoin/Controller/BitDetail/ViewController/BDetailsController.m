@@ -37,6 +37,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+     [self setMySatusBarStyle:UIStatusBarStyleLightContent];
      [self.navBar.topItem setTitle:self.navititle];
     [self setUpViews];
     [self setViewModelBlock];
@@ -44,8 +45,8 @@
     self.requestKey = @"minute";
     [self requesPricebitId:self.bitId withtype:@"minute"];
    
-    [self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
-    
+    //[self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestPreic:) name:@"CharLineReresh" object:nil];
  
 }
 
@@ -56,11 +57,18 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
 }
 
 - (void)dealloc{
     [self stopTimer];
+}
+
+- (void)requestPreic:(NSNotification *)notification {
+    if (self.bitId && self.requestKey){
+        [self requestLasterPrice:self.bitId withKey:self.requestKey];
+    }
 }
 
 - (void)setUpViews{
@@ -92,12 +100,13 @@
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
    
     dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, period * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
-    
+    @weakify(self)
     dispatch_source_set_event_handler(_timer, ^{
         
         NSLog(@"%@" , [NSThread currentThread]);//打印当前线程
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            @strongify(self)
             [self requestLasterPrice:self.bitId withKey:self.requestKey];
         });
         
@@ -142,7 +151,7 @@
                   NSArray *array  = [BitDetailsPriceEntity mj_objectArrayWithKeyValuesArray:returnParam];
                   [self.pricData setObject:array forKey:key];
                   
-                  [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
+                  [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey];
               }
 
           }else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitFollow_Code]){
@@ -178,7 +187,8 @@
                   
               }
               [self.tableHeaderView setDetailCellData:self.detailsEntity];
-              [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
+              [self.tableHeaderView setBitLineLasterPrice:self.priceEntity];
+             // [self.tableHeaderView setBitLineData:[self.pricData valueForKey:self.requestKey] withKey:self.requestKey withLaster:self.priceEntity];
           }
     } WithErrorBlock:^(id errorCode, id extroInfo) {
         @strongify(self)

@@ -22,6 +22,7 @@
 @property (nonatomic ,strong)MBProgressHUD *HUD;
 @property (nonatomic,assign)CGFloat navBarH;
 @property (nonatomic, assign) BOOL lineBool;
+@property (nonatomic ,assign)UIStatusBarStyle mySatusBarStyle;
 
 - (void)setViewModelData;
 - (void)setViewModelCallBack;

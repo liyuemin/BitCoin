@@ -42,6 +42,16 @@
    // [MobClick endLogPageView:NSStringFromClass([self class])];
 }
 
+- (void)setMySatusBarStyle:(UIStatusBarStyle)mySatusBarStyle{
+    _mySatusBarStyle = mySatusBarStyle;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle{
+    
+    return _mySatusBarStyle;
+}
+
 #pragma mark - Public
 - (void)showAlertToast:(NSString *)alertString withHide:(BOOL)hide
 {

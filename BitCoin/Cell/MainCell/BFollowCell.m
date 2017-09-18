@@ -12,7 +12,7 @@
 @property (nonatomic ,strong)UILabel *desLable;
 @property (nonatomic ,strong)UILabel *moneyLabel;
 @property (nonatomic ,strong)UIButton *preButton;
-@property (nonatomic ,assign)BOOL is_disPlay;
+@property (nonatomic ,assign)NSInteger is_disPlay;
 @end
 
 @implementation BFollowCell
@@ -22,7 +22,7 @@
     if (self){
         [self setUpViews];
         [self setConstraintViews];
-        self.is_disPlay = NO;
+        self.is_disPlay = 0;
     }
     return self;
 }
@@ -130,17 +130,41 @@
     return _preButton;
 }
 
-- (void)setFollowData:(BitEnity *)entity withDisPlay:(BOOL)display withAnimation:(BOOL)animation {
+- (void)setFollowData:(BitEnity *)entity withDisPlay:(NSInteger)display withAnimation:(BOOL)animation {
+    
+    if (![self.moneyLabel.text isEqualToString:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]]){
+        if (animation){
+            [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+                if ([entity.rising floatValue] > 0){
+                    [self.contentView setBackgroundColor:k_D0402D];
+                } else {
+                    [self.contentView setBackgroundColor:k_17B03E];
+                }
+                
+            } completion:^(BOOL finished) {
+                if (finished) {
+                    [UIView animateWithDuration:1 animations:^{
+                        //self.contentView.alpha = 1.0;
+                        [self.contentView setBackgroundColor:[UIColor clearColor]];
+                    }];
+                }
+            }];
+        }
+
+    }
+    
     [self.titleLabel setText:entity.btc_title_display];
     [self.desLable setText:entity.btc_trade_from_name];
     self.is_disPlay = display;
     
-    if (display){
+    if (display == 1){
         [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf",[entity.rising_val floatValue]] forState:UIControlStateNormal];
 
-    }else {
-        [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
+    }else if (display == 2){
+        [self.preButton setTitle:[NSString stringWithFormat:@"%@",entity.trading] forState:UIControlStateNormal];
 
+    } else {
+        [self.preButton setTitle:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0] forState:UIControlStateNormal];
     }
     [self.moneyLabel setText:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]];
         if ([entity.rising floatValue] > 0){
@@ -148,25 +172,16 @@
             [self.moneyLabel setTextColor:k_D0402D];
     }else {
          [self.moneyLabel setTextColor:k_17B03E];
-        [self.preButton setBackgroundColor:k_17B03E];
-    }
-    if (animation){
-        [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
-            //执行动画
-            self.preButton.alpha = 0;
-            
-        } completion:^(BOOL finished) {
-            if (finished) {
-                [UIView animateWithDuration:1 animations:^{
-                    self.preButton.alpha = 1.0;
-                }];
-            }
-        }];
+         [self.preButton setBackgroundColor:k_17B03E];
+        
     }
 }
 
 - (void)clictButton:(UIButton *)button {
-    self.is_disPlay = !self.is_disPlay;
+    self.is_disPlay++;
+    if (self.is_disPlay > 2){
+        self.is_disPlay = 0;
+    }
     if (_delegate && [_delegate respondsToSelector:@selector(didSelect:withDisPlay:)]){
         [_delegate didSelect:self withDisPlay:self.is_disPlay];
     }

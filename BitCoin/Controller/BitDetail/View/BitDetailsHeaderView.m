@@ -113,7 +113,7 @@
     
     [self.lineChart mas_makeConstraints:^(MASConstraintMaker *maker){
         maker.left.mas_equalTo(self.linBgView).offset(20);
-        maker.top.mas_equalTo(self.linBgView).offset(60);
+        maker.top.mas_equalTo(self.linBgView).offset(55);
         maker.right.mas_equalTo(self.linBgView).offset(0);
         maker.bottom.mas_equalTo(self.linBgView).offset(0);
     }];
@@ -269,7 +269,7 @@
         [self.roseRateLabel setTextColor:k_17B03E];
         [self.rosePriceLabel setTextColor:k_17B03E];
         [self.roseRateLabel setText:[NSString stringWithFormat:@"%.2lf%%",[entity.rising floatValue]/100.0]];
-        [self.rosePriceLabel setText:[NSString stringWithFormat:@"-%.2f",[entity.rising_val floatValue]]];
+        [self.rosePriceLabel setText:[NSString stringWithFormat:@"%.2f",[entity.rising_val floatValue]]];
         
     }
     if (entity.is_follow){
@@ -293,7 +293,7 @@
     }
 }
 
-- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key withLaster:(BitDetailsPriceEntity *)entity {
+- (void)setBitLineData:(NSArray *)array withKey:(NSString *)key {
     if(array && array.count > 0){
         if ([key isEqualToString:@"minute"]){
             [self.lineChart setTimeType:BitLineTimeTypeMinutes];
@@ -304,8 +304,13 @@
         }else if ([key isEqualToString:@"month"]){
             [self.lineChart setTimeType:BitLineTimeTypeMonth];
         }
-        [self.lineChart setDataArray:array withLaster:entity];
+        [self.lineChart setLineData:array];
+        //[self.lineChart setDataArray:array withLaster:entity];
     }
+}
+
+- (void)setBitLineLasterPrice:(BitDetailsPriceEntity *)entity {
+    [self.lineChart setLasterPrice:entity];
 }
 
 

@@ -39,6 +39,8 @@
 - (void)viewDidLoad {
     self.haveMyNavBar = YES;
     [super viewDidLoad];
+    [self setMySatusBarStyle:UIStatusBarStyleLightContent];
+    
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self setupViews];
     [self setViewModle];
@@ -52,10 +54,12 @@
     [_featureView.bgImageView setImage:[UIImage imageNamed:@"lunchScreen"]];
     [window addSubview:_featureView];
     [_featureView setDelegate:self];
-    [self performSelector:@selector(removeBgView) withObject:nil afterDelay:2];
+    [self performSelector:@selector(removeBgView) withObject:nil afterDelay:1];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotification:) name:@"pushnotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gomMessage:) name:@"pushViewController" object:nil];
 
 }
+
 
 
 - (void)removeBgView{
@@ -64,7 +68,6 @@
         NSArray *featureData = [KUserdefaults objectForKey:@"appStartData"];
         if (featureData.count > 2){
             [_featureView setFeatureData:[BitEnity mj_objectArrayWithKeyValuesArray:featureData]];
-            [self performSelector:@selector(removeFeatureView:) withObject:nil afterDelay:2];
         } else {
             [_featureView removeFromSuperview];
         }
@@ -139,11 +142,18 @@
 
 - (void)setSegmentedData{
     NSMutableArray *bittypArray = [[NSMutableArray alloc] init];
-    for(BitClassEntity *entity in self.bitClassData){
+    int hotIndex = -1;
+    for(int i = 0 ; i < self.bitClassData.count ; i++){
+        BitClassEntity *entity = [self.bitClassData objectAtIndex:i];
+        if ([entity.tag isEqualToString:@"hot"]){
+            hotIndex = i;
+        }
         [bittypArray addObject:entity.title];
     }
-    [self.segmentedControl setBadgeImage:[UIImage imageNamed:@"home_hot_cion"]];
-    [self.segmentedControl setBadgeIndex:2];
+    if (hotIndex >= 0){
+        [self.segmentedControl setBadgeImage:[UIImage imageNamed:@"home_hot_cion"]];
+        [self.segmentedControl setBadgeIndex:hotIndex];
+    }
     [self.segmentedControl setSectionTitles:bittypArray];
     [self.tableView reloadData];
     [self segmentedControlChangedValue:self.segmentedControl];
@@ -198,7 +208,7 @@
 
 
 - (void)setDesplayTimer{
-    NSTimeInterval period = 5.0;//设置时间间隔
+    NSTimeInterval period = 12.0;//设置时间间隔
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     
@@ -206,11 +216,14 @@
     
     dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, period * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
     
+    @weakify(self)
+    
     dispatch_source_set_event_handler(_timer, ^{
         
         NSLog(@"%@" , [NSThread currentThread]);//打印当前线程
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            @strongify(self)
             if (self.bitClassData.count > 0){
                 [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:self.segmentedControl.selectedSegmentIndex] val] page:1 withLoad:NO withRefrensh:NO];
             }
@@ -277,7 +290,6 @@
         if ([requestSring rangeOfString:API_BitHomeList_Code].location != NSNotFound && key != nil){
             ApiError *error = (ApiError *)retrunParam;
             if (error.statusCode == 400){
-                [self.bitData setObject:[NSArray array] forKey:key];
                 [self.tableView reloadData];
             }
 
@@ -306,7 +318,8 @@
 
 }
 
-- (void)gomMessage:(UIButton *)button{
+- (void)gomMessage:(id)sender{
+    UIButton *button = (UIButton *)[self.navBar.topItem.leftBarButtonItem customView];
     [button pp_hiddenBadge];
     BitMessageController *messageVC = [[BitMessageController alloc] init];
     [messageVC setNavBarColor:k_FAFAFA];

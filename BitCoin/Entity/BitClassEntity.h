@@ -11,4 +11,5 @@
 @interface BitClassEntity : NSObject
 @property (nonatomic ,strong)NSString *title;
 @property (nonatomic ,strong)NSString *val;
+@property (nonatomic ,strong)NSString *tag;
 @end

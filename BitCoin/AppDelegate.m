@@ -107,13 +107,14 @@
 }
 
 - (void)pushAPNSController{
-    BitMessageController *message = [[BitMessageController alloc] init];
-    [message setHaveMyNavBar:YES];
-    [message setHaveBackBtn:YES];
-
-    UINavigationController *naivigation = (UINavigationController *)self.window.rootViewController;
-    
-    [naivigation.topViewController.navigationController pushViewController:message animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"pushViewController" object:nil userInfo:nil];
+//    BitMessageController *message = [[BitMessageController alloc] init];
+//    [message setHaveMyNavBar:YES];
+//    [message setHaveBackBtn:YES];
+//
+//    UINavigationController *naivigation = (UINavigationController *)self.window.rootViewController;
+//    
+//    [naivigation.topViewController.navigationController pushViewController:message animated:YES];
 }
 
 

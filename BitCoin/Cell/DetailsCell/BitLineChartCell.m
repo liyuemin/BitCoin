@@ -66,7 +66,7 @@
         }else if ([key isEqualToString:@"month"]){
             [self.lineChart setTimeType:BitLineTimeTypeMonth];
         }
-        [self.lineChart setDataArray:array withLaster:entity];
+       // [self.lineChart setDataArray:array withLaster:entity];
     }
 }
 
