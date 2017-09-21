@@ -10,7 +10,7 @@
 #define ConstantConfig_h
 
 //发布到AppStore打开
-//#define Distribution
+#define Distribution
 
 
 #pragma mark - 系统版本
@@ -117,7 +117,7 @@
 #ifdef Distribution
     /*网络BaseUrl*/
     #define API_H5Url @"http://www.hidida.com"
-    #define API_Base @"https://api.hidida.com"
+    #define API_Base @"https://api.caigeqiua.cn"
     /*阿里百川feedback AppKey*/
     #define AliBaiChuan_FeedBackAppKey @"24567589"
     #define AliBaiChuan_FeedBackAppSecret @"5b6b4a690370c79774a7fa5dc1941cd5"
@@ -137,9 +137,9 @@
     /*AppStore*/
     #define APPSTORE_APPID @"1211119245"
     /*个推开发者网站中申请App时，注册的AppId、AppKey、AppSecret*/
-    #define kGtAppId           @"VYWfkrlKtc84gOJ6az3Wp9"
-    #define kGtAppKey          @"PRfcirW0Ym8VWyocPwDf66"
-    #define kGtAppSecret       @"VYdKXTyUXGAntZrQ8QVbv"
+    #define kGtAppId           @"EfWsYx1NsU9ZcCXUMraPv4"
+    #define kGtAppKey          @"JFPRbTilqH9RFO0f0pOTN2"
+    #define kGtAppSecret       @"WNwgZN7kbO7JZvwQ20pWq9"
 #else
     /*网络BaseUrl*/
     #define API_H5Url @"http://www.hidida.com"

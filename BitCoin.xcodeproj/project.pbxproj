@@ -1483,6 +1483,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = BitCoin/BitCoin.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhang zhang (C357DB8ZAM)";
 				DEVELOPMENT_TEAM = GUMYG6PNCP;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BitCoin/BitCoin-Prefix.pch";
@@ -1491,7 +1492,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaohui.bitcoin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4d25c7ee-a0d9-455d-94bc-3c93e6cf9fd1";
+				PROVISIONING_PROFILE = "40776c44-ec54-406b-bdd8-65f9fa99444f";
 				PROVISIONING_PROFILE_SPECIFIER = BitDevelopmentProvisioning;
 			};
 			name = Debug;
@@ -1502,7 +1503,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = BitCoin/BitCoin.entitlements;
-				DEVELOPMENT_TEAM = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhang zhang (C357DB8ZAM)";
+				DEVELOPMENT_TEAM = GUMYG6PNCP;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BitCoin/BitCoin-Prefix.pch";
 				INFOPLIST_FILE = BitCoin/Info.plist;
@@ -1510,7 +1512,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaohui.bitcoin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "40776c44-ec54-406b-bdd8-65f9fa99444f";
+				PROVISIONING_PROFILE_SPECIFIER = BitDevelopmentProvisioning;
 			};
 			name = Release;
 		};
