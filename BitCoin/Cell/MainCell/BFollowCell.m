@@ -7,12 +7,16 @@
 //
 
 #import "BFollowCell.h"
+#import "UIImageView+YYWebImage.h"
+
 @interface BFollowCell()
 @property (nonatomic ,strong)UILabel *titleLabel;
 @property (nonatomic ,strong)UILabel *desLable;
 @property (nonatomic ,strong)UILabel *moneyLabel;
 @property (nonatomic ,strong)UIButton *preButton;
 @property (nonatomic ,assign)NSInteger is_disPlay;
+@property (nonatomic ,strong)UIImageView *iconImageView;
+@property (nonatomic ,strong)UIImageView *countryImageView;
 @end
 
 @implementation BFollowCell
@@ -43,6 +47,8 @@
     [self.contentView addSubview:self.desLable];
     [self.contentView addSubview:self.moneyLabel];
     [self.contentView addSubview:self.preButton];
+    [self.contentView addSubview:self.iconImageView];
+    [self.contentView addSubview:self.countryImageView];
 }
 
 - (void)setConstraintViews{
@@ -63,14 +69,14 @@
     }];
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.left.mas_equalTo(self.contentView).offset(15);
+        maker.left.mas_equalTo(self.contentView).offset(30);
         maker.top.mas_equalTo(self.contentView).offset(18);
         maker.right.mas_equalTo(self.moneyLabel.mas_left).offset(-15);
         maker.height.mas_equalTo(20);
     }];
     
     [self.desLable mas_makeConstraints:^(MASConstraintMaker *maker){
-        maker.left.mas_equalTo(self.contentView).offset(15);
+        maker.left.mas_equalTo(self.contentView).offset(30);
         maker.top.mas_equalTo(self.titleLabel.mas_bottom).offset(6);
         maker.right.mas_equalTo(self.moneyLabel.mas_left).offset(-15);
         maker.height.mas_equalTo(20);
@@ -130,6 +136,22 @@
     return _preButton;
 }
 
+- (UIImageView *)iconImageView{
+    
+    if (!_iconImageView){
+        _iconImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
+    return _iconImageView;
+}
+
+- (UIImageView *)countryImageView{
+    
+    if (!_countryImageView){
+        _countryImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
+    return _countryImageView;
+}
+
 - (void)setFollowData:(BitEnity *)entity withDisPlay:(NSInteger)display withAnimation:(BOOL)animation {
     
     if (![self.moneyLabel.text isEqualToString:[NSString stringWithFormat:@"￥%.2lf",[entity.btc_price floatValue]]]){
@@ -175,6 +197,55 @@
          [self.preButton setBackgroundColor:k_17B03E];
         
     }
+
+    @weakify(self)
+    [self.iconImageView setImageWithURL:[NSURL URLWithString:entity.imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,
+                                    NSURL *url,
+                       YYWebImageFromType from,
+                          YYWebImageStage stage,
+                         NSError * _Nullable error){
+        @strongify(self)
+        if (image){
+             [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(self.contentView).offset(5);
+                maker.centerY.mas_equalTo(self.titleLabel.mas_centerY);
+                maker.width.height.mas_equalTo(20);
+                
+            }];
+            [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(self.contentView).offset(30);
+            }];
+            [self.desLable mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(self.contentView).offset(30);
+            }];
+        } else {
+            
+            [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(self.contentView).offset(15);
+            }];
+            [self.desLable mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(self.contentView).offset(15);
+            }];
+        }
+    }];
+    [self.countryImageView setImageWithURL:[NSURL URLWithString:entity.flag_imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,NSURL *url,YYWebImageFromType from,YYWebImageStage stage,NSError * _Nullable error){
+          @strongify(self)
+        if (image){
+            [self.countryImageView sizeToFit];
+            CGSize titleSize = [entity.btc_title_display boundingRectWithSize:CGSizeMake(ScreenWidth - 245, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:16]} context:nil].size;
+            CGFloat width = 15;
+            if (self.iconImageView.frame.size.width >= 20){
+                width = 30;
+                
+            }
+             [self.countryImageView mas_updateConstraints:^(MASConstraintMaker *maker){
+                 maker.left.mas_equalTo(titleSize.width + width + image.size.width/2);
+                 maker.centerY.mas_equalTo(self.titleLabel.mas_centerY).offset(-5);
+            
+        }];
+        }
+    }];
+    
 }
 
 - (void)clictButton:(UIButton *)button {

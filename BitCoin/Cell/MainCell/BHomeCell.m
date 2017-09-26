@@ -10,6 +10,7 @@
 #import "BFollowCell.h"
 #import "BitHomeHeaderView.h"
 #import "MSLoadingView.h"
+#import "MJRefreshAutoNormalFooter.h"
 
 @interface BHomeCell()<UITableViewDelegate,UITableViewDataSource,MSLoadingViewDelegate,BFollowCellDelegate>
 
@@ -60,11 +61,13 @@
 }
 
 -(void)beginRefreshing {
-  [self.cellTable.mj_header beginRefreshing];
+    [self.cellTable.mj_header beginRefreshing];
+    //[self.cellTable.mj_footer beginRefreshing];
 }
 
 - (void)endRefreshing{
     [self.cellTable.mj_header endRefreshing];
+    //[self.cellTable.mj_footer endRefreshing];
 }
 
 - (void)headerWithRefreshing{
@@ -74,6 +77,13 @@
     }
 
 }
+
+//- (void)footerWithRefreshing{
+//    if (_delegate != nil && [_delegate respondsToSelector:@selector(footerReloadData:)]){
+//        [_delegate footerReloadData:self];
+//    }
+//
+//}
 
 - (void)constraintViews{
     [self.cellTable mas_makeConstraints:^(MASConstraintMaker *maker){
@@ -215,12 +225,21 @@
         _cellTable = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_cellTable setDelegate:self];
         [_cellTable setDataSource:self];
-        [_cellTable setShowsVerticalScrollIndicator:NO];
-        [_cellTable setShowsHorizontalScrollIndicator:NO];
+        [_cellTable setShowsVerticalScrollIndicator:YES];
+        [_cellTable setShowsHorizontalScrollIndicator:YES];
         [_cellTable setSeparatorInset:UIEdgeInsetsZero];
         [_cellTable setLayoutMargins:UIEdgeInsetsZero];
-        [_cellTable setBackgroundColor:k_EFEFF4];
         
+        [_cellTable setBackgroundColor:k_EFEFF4];
+        if(@available(iOS 11.0, *)){
+            _cellTable.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            //_cellTable.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+            //_cellTable.scrollIndicatorInsets = _cellTable.contentInset;
+            
+        }else {
+            
+            
+        }
         MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
         header.stateLabel.hidden = YES;
         header.lastUpdatedTimeLabel.hidden = YES;
@@ -237,6 +256,8 @@
         [header setImages:[imageArray subarrayWithRange:NSMakeRange(23, 1)] forState:MJRefreshStateWillRefresh];
         // 设置header
         _cellTable.mj_header = header;
+        
+       // _cellTable.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(footerWithRefreshing)];
 //        _cellTable.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
     }
     return _cellTable;

@@ -26,5 +26,6 @@
 
 - (void)didSelectIndexData:(BitEnity *)entity;
 - (void)refreshingData:(BHomeCell *)homecell;
+//- (void)footerReloadData:(BHomeCell *)homecell;
 - (void)addBitFollow;
 @end

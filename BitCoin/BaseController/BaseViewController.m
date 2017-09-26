@@ -33,13 +33,13 @@
     self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
     
     NSLog(@"%s",__func__);
-   // [MobClick beginLogPageView:NSStringFromClass([self class])];
+   [MobClick beginLogPageView:NSStringFromClass([self class])];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-   // [MobClick endLogPageView:NSStringFromClass([self class])];
+   [MobClick endLogPageView:NSStringFromClass([self class])];
 }
 
 - (void)setMySatusBarStyle:(UIStatusBarStyle)mySatusBarStyle{

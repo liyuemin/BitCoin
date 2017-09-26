@@ -38,14 +38,15 @@
 
 - (void)viewDidLoad {
     self.haveMyNavBar = YES;
+    self.noMyNavBarBackBtn = YES;
     [super viewDidLoad];
-    [self setMySatusBarStyle:UIStatusBarStyleLightContent];
+    //[self setMySatusBarStyle:UIStatusBarStyleLightContent];
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self setupViews];
     [self setViewModle];
     [self requestHttp];
-    //[self setDesplayTimer];
+   // [self setDesplayTimer];
     [self.view addSubview:self.loadingView];
     
     
@@ -96,14 +97,15 @@
     [button.titleLabel setFont:SYS_FONT(18)];
     [button sizeToFit];
     [button setCenter:CGPointMake(self.navBar.center.x, self.navBar.center.y +10)];
-    //[titleView addSubview:button];
     [self.navBar addSubview:button];
     
     UIButton * rightBnt = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightBnt setImage:[UIImage imageNamed:@"home_search_icon"] forState:UIControlStateNormal];
+    [rightBnt setBackgroundColor:[UIColor redColor]];
     [rightBnt addTarget:self action:@selector(searchBit:) forControlEvents:UIControlEventTouchUpInside];
     [rightBnt sizeToFit];
     UIBarButtonItem * rightBntItem = [[UIBarButtonItem alloc]initWithCustomView:rightBnt];
+
     self.navBar.topItem.rightBarButtonItem = rightBntItem;
     
     UIButton * LeftBnt = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -118,7 +120,6 @@
     [self.view addSubview:self.segmentedControl];
     
     [self.view addSubview:self.tableView];
-    
 
 }
 
@@ -127,7 +128,6 @@
     if (self.bitClassData.count > 0){
         [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:0] val] page:1 withLoad:NO withRefrensh:YES];
     }
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -145,6 +145,7 @@
     int hotIndex = -1;
     for(int i = 0 ; i < self.bitClassData.count ; i++){
         BitClassEntity *entity = [self.bitClassData objectAtIndex:i];
+
         if ([entity.tag isEqualToString:@"hot"]){
             hotIndex = i;
         }
@@ -256,7 +257,8 @@
             NSLog(@"%@",temArray);
             [self endRefreshing:key];
             [self.bitData setObject:temArray forKey:key];
-            [self.tableView reloadData];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.segmentedControl.selectedSegmentIndex inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            //[self.tableView reloadData];
         }else if ([[extroInfo valueForKey:API_Back_URLCode] isEqualToString:API_BitClassInfo_Code]){
             self.loadingView.hidden = YES;
             self.bitClassData = [BitClassEntity mj_objectArrayWithKeyValuesArray:returnParam];
@@ -355,12 +357,21 @@
 
 
 
+
 - (void)segmentedControlChangedValue:(HMSegmentedControl *)segmentedControl {
     NSLog(@"Selected index %ld (via UIControlEventValueChanged)", (long)segmentedControl.selectedSegmentIndex);
     NSInteger index = (long)segmentedControl.selectedSegmentIndex;
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
+    
+    [UIView animateWithDuration:.1 animations:^{
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:NO];
+    } completion:^(BOOL finish){
+        
+        [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:NO withRefrensh:NO];
+    }];
+    
+    
    // BHomeCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:index] val] page:1 withLoad:NO withRefrensh:NO];
+    
     
 }
 
@@ -392,6 +403,13 @@
     NSIndexPath *path = [self.tableView indexPathForCell:homecell];
     [self requestBitType:[(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val] page:1 withLoad:NO withRefrensh:YES];
 }
+
+//- (void)footerReloadData:(BHomeCell *)homecell {
+//    NSIndexPath *path = [self.tableView indexPathForCell:homecell];
+//    NSString *key = [(BitClassEntity *)[self.bitClassData objectAtIndex:path.row] val];
+//    NSString *page = [self.pageData objectForKey:key];
+//
+//}
 
 - (void)addBitFollow{
     [self searchBit:nil];
@@ -445,9 +463,20 @@
         _tableView.frame = CGRectMake(0, ScreenHeight, ScreenWidth, ScreenHeight-106);
         _tableView.allowsSelection = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        if(@available(iOS 11.0, *)){
+            _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            _tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//导航栏如果使用系统原生半透明的，top设置为64
+            _tableView.scrollIndicatorInsets = _tableView.contentInset;
+
+        }else {
+
+
+        }
     }
     return _tableView;
 }
+
+
 
 - (BHomeViewModel *)homeViewModel {
     if (!_homeViewModel){
@@ -477,6 +506,7 @@
     return _requstTimeData;
 }
 
+
 -(MSLoadingView *)loadingView
 {
     if (!_loadingView)
@@ -489,6 +519,7 @@
     }
     return _loadingView;
 }
+
 
 
 @end

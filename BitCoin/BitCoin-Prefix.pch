@@ -17,4 +17,5 @@
 #import "Masonry.h"
 #import "UIColor+More.h"
 #import "APIUrlManager.h"
+#import "UMMobClick/MobClick.h"
 #endif /* BitCoin_Prefix_pch */

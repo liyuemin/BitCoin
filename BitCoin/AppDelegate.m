@@ -27,6 +27,7 @@
     }
     [self setViewModelBlock];
     [self.appViewModel requestStart];
+    [self setUMConfig];
     return YES;
 }
 
@@ -172,6 +173,21 @@
     [KUserdefaults synchronize];
     [self requestAPNS:clientId];
 }
+
+- (void)setUMConfig{
+#ifdef Distribution
+#else
+    [MobClick setLogEnabled:YES];
+#endif
+    UMConfigInstance.appKey = YOUMENG_APPKEY;
+    
+    UMConfigInstance.channelId = @"App Store";
+    UMConfigInstance.eSType = E_UM_GAME; //仅适用于游戏场景，应用统计不用设置
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [MobClick setAppVersion:version];
+    [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
+}
+
 
 
 /** SDK遇到错误回调 */

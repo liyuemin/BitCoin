@@ -17,4 +17,7 @@
 @property (nonatomic ,strong)NSString *rising;
 @property (nonatomic ,strong)NSString *trading;
 @property (nonatomic ,assign)BOOL is_follow;
+@property (nonatomic ,strong)NSString *btc_curr;
+@property (nonatomic ,strong)NSString *flag_imgurl;
+@property (nonatomic ,strong)NSString *imgurl;
 @end

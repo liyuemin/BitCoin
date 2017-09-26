@@ -45,7 +45,7 @@
     self.requestKey = @"minute";
     [self requesPricebitId:self.bitId withtype:@"minute"];
    
-    //[self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
+    [self performSelector:@selector(setDesplayTimer)withObject:nil afterDelay:5];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestPreic:) name:@"CharLineReresh" object:nil];
  
 }

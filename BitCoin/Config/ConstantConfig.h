@@ -123,7 +123,7 @@
     #define AliBaiChuan_FeedBackAppSecret @"5b6b4a690370c79774a7fa5dc1941cd5"
     #define AliBaiChuan_mmPid @"mm_24440483_0_0"
     /*UMeng AppKey*/
-    #define YOUMENG_APPKEY @"58bd02d076661304ec001add"
+    #define YOUMENG_APPKEY @"59c9f998aed1796bb3000043"
     /*UMeng Channel*/
     #define UMENG_CHANNEL @"AppStore"
     /*QQ*/

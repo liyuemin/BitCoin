@@ -8,6 +8,7 @@
 
 #import "BitDetailsHeaderView.h"
 #import "BitLineChartView.h"
+#import "UIImageView+YYWebImage.h"
 
 @interface BitDetailsHeaderView()
 
@@ -19,6 +20,8 @@
 @property (nonatomic ,strong)UILabel *rosePriceLabel;
 @property (nonatomic ,strong)UIButton *followButton;
 @property (nonatomic ,strong)UIView *linBgView;
+@property (nonatomic ,strong)UIImageView *iconImageView;
+@property (nonatomic ,strong)UIImageView *countryImageView;
 
 @property (nonatomic ,strong)BitLineChartView *lineChart;
 @property (nonatomic ,strong)UISegmentedControl *segmentControl;
@@ -43,6 +46,8 @@
     [self addSubview:self.roseRateLabel];
     [self addSubview:self.rosePriceLabel];
     [self addSubview:self.followButton];
+    [self addSubview:self.iconImageView];
+    [self addSubview:self.countryImageView];
     [self addSubview:self.linBgView];
     [self.linBgView addSubview:self.segmentControl];
     [self.linBgView addSubview:self.lineChart];
@@ -188,6 +193,20 @@
     return _followButton;
 }
 
+- (UIImageView *)iconImageView{
+    if (!_iconImageView){
+        _iconImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
+    return _iconImageView;
+}
+
+- (UIImageView *)countryImageView{
+    if (!_countryImageView){
+        _countryImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
+    return _countryImageView;
+}
+
 - (UIView *)linBgView{
     if (!_linBgView){
         _linBgView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -291,6 +310,38 @@
         
         
     }
+    
+    @weakify(self)
+    [self.iconImageView setImageWithURL:[NSURL URLWithString:entity.imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,
+                                                                                                                             NSURL *url,
+                                                                                                                             YYWebImageFromType from,
+                                                                                                                             YYWebImageStage stage,
+                                                                                                                             NSError * _Nullable error){
+        @strongify(self)
+        if (image){
+            CGSize titleSize = [self.tradePlatformLabel.text boundingRectWithSize:CGSizeMake(200, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:SYS_FONT(12)} context:nil].size;
+            [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(titleSize.width+20);
+                maker.centerY.mas_equalTo(self.tradePlatformLabel.mas_centerY);
+                maker.width.height.mas_equalTo(20);
+                
+            }];
+
+        }
+    }];
+    [self.countryImageView setImageWithURL:[NSURL URLWithString:entity.flag_imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,NSURL *url,YYWebImageFromType from,YYWebImageStage stage,NSError * _Nullable error){
+        @strongify(self)
+        if (image){
+            [self.countryImageView sizeToFit];
+            CGSize titleSize = [entity.btc_title_display boundingRectWithSize:CGSizeMake(ScreenWidth - 245, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:16]} context:nil].size;
+            [self.countryImageView mas_updateConstraints:^(MASConstraintMaker *maker){
+                maker.left.mas_equalTo(titleSize.width + 20);
+                maker.centerY.mas_equalTo(self.titleLabel.mas_centerY).offset(-5);
+                
+            }];
+        }
+    }];
+    
 }
 
 - (void)setBitLineData:(NSArray *)array withKey:(NSString *)key {

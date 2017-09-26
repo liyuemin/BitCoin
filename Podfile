@@ -9,4 +9,5 @@ pod 'MJExtension'
 pod 'YYKit'
 pod 'Masonry'
 pod 'GTSDK', '2.0.0.0-noidfa'
+pod 'UMengAnalytics'
 end

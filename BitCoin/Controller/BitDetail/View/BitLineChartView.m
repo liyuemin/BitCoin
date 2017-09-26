@@ -386,6 +386,10 @@
     if (priceY >= _maxPointY){
         priceY =  _maxPointY;
     }
+    if (priceY == _minPointY && priceY == _minPointY){
+        
+        return  CGPointMake(pointX, self.frame.size.height - 45);
+    }
     CGFloat pointY =(self.frame.size.height - 60) - ((priceY - _minPointY)/(_maxPointY - _minPointY) *(self.frame.size.height - 60)) + 15;
     NSLog(@"数据---%@ --- x轴%lf---y轴%lf ---- %lf",[pointData mj_keyValues],pointX,pointY,self.frame.size.width);
     return CGPointMake(pointX, pointY);
