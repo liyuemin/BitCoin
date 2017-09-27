@@ -319,10 +319,11 @@
                                                                                                                              NSError * _Nullable error){
         @strongify(self)
         if (image){
-            CGSize titleSize = [self.tradePlatformLabel.text boundingRectWithSize:CGSizeMake(200, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:SYS_FONT(12)} context:nil].size;
+            CGSize titleSize = [entity.btc_title_display boundingRectWithSize:CGSizeMake(ScreenWidth - 245, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:16]} context:nil].size;
+
             [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *maker){
                 maker.left.mas_equalTo(titleSize.width+20);
-                maker.centerY.mas_equalTo(self.tradePlatformLabel.mas_centerY);
+                maker.centerY.mas_equalTo(self.titleLabel.mas_centerY);
                 maker.width.height.mas_equalTo(20);
                 
             }];
@@ -332,11 +333,14 @@
     [self.countryImageView setImageWithURL:[NSURL URLWithString:entity.flag_imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,NSURL *url,YYWebImageFromType from,YYWebImageStage stage,NSError * _Nullable error){
         @strongify(self)
         if (image){
-            [self.countryImageView sizeToFit];
-            CGSize titleSize = [entity.btc_title_display boundingRectWithSize:CGSizeMake(ScreenWidth - 245, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:16]} context:nil].size;
+            CGSize titleSize = [self.tradePlatformLabel.text boundingRectWithSize:CGSizeMake(200, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:SYS_FONT(12)} context:nil].size;
+
             [self.countryImageView mas_updateConstraints:^(MASConstraintMaker *maker){
                 maker.left.mas_equalTo(titleSize.width + 20);
-                maker.centerY.mas_equalTo(self.titleLabel.mas_centerY).offset(-5);
+                maker.height.mas_equalTo(14);
+                maker.width.mas_equalTo(14/image.size.height * image.size.width);
+
+                maker.centerY.mas_equalTo(self.tradePlatformLabel.mas_centerY);
                 
             }];
         }

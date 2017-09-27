@@ -231,15 +231,15 @@
         [_cellTable setLayoutMargins:UIEdgeInsetsZero];
         
         [_cellTable setBackgroundColor:k_EFEFF4];
-        if(@available(iOS 11.0, *)){
-            _cellTable.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            //_cellTable.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-            //_cellTable.scrollIndicatorInsets = _cellTable.contentInset;
-            
-        }else {
-            
-            
-        }
+//        if(@available(iOS 11.0, *)){
+//            _cellTable.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//            //_cellTable.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+//            //_cellTable.scrollIndicatorInsets = _cellTable.contentInset;
+//            
+//        }else {
+//            
+//            
+//        }
         MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerWithRefreshing)];
         header.stateLabel.hidden = YES;
         header.lastUpdatedTimeLabel.hidden = YES;

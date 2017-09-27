@@ -208,15 +208,15 @@
         if (image){
              [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *maker){
                 maker.left.mas_equalTo(self.contentView).offset(5);
-                maker.centerY.mas_equalTo(self.titleLabel.mas_centerY);
-                maker.width.height.mas_equalTo(20);
+                maker.centerY.mas_equalTo(self.contentView.mas_centerY);
+                maker.width.height.mas_equalTo(30);
                 
             }];
             [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *maker){
-                maker.left.mas_equalTo(self.contentView).offset(30);
+                maker.left.mas_equalTo(self.contentView).offset(40);
             }];
             [self.desLable mas_updateConstraints:^(MASConstraintMaker *maker){
-                maker.left.mas_equalTo(self.contentView).offset(30);
+                maker.left.mas_equalTo(self.contentView).offset(40);
             }];
         } else {
             
@@ -231,16 +231,17 @@
     [self.countryImageView setImageWithURL:[NSURL URLWithString:entity.flag_imgurl] placeholder:nil options:kNilOptions completion:^(UIImage * _Nullable image,NSURL *url,YYWebImageFromType from,YYWebImageStage stage,NSError * _Nullable error){
           @strongify(self)
         if (image){
-            [self.countryImageView sizeToFit];
             CGSize titleSize = [entity.btc_title_display boundingRectWithSize:CGSizeMake(ScreenWidth - 245, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:16]} context:nil].size;
             CGFloat width = 15;
-            if (self.iconImageView.frame.size.width >= 20){
-                width = 30;
+            if (entity.imgurl.length != 0){
+                width = 40;
                 
             }
              [self.countryImageView mas_updateConstraints:^(MASConstraintMaker *maker){
-                 maker.left.mas_equalTo(titleSize.width + width + image.size.width/2);
-                 maker.centerY.mas_equalTo(self.titleLabel.mas_centerY).offset(-5);
+                 maker.top.mas_equalTo(self.contentView).offset(19);
+                 maker.left.mas_equalTo(titleSize.width + width + image.size.height/20 * image.size.width + 5);
+                 maker.height.mas_equalTo(18);
+                 maker.width.mas_equalTo(18/image.size.height * image.size.width);
             
         }];
         }

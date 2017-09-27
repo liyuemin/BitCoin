@@ -101,7 +101,7 @@
     
     UIButton * rightBnt = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightBnt setImage:[UIImage imageNamed:@"home_search_icon"] forState:UIControlStateNormal];
-    [rightBnt setBackgroundColor:[UIColor redColor]];
+    //[rightBnt setBackgroundColor:[UIColor redColor]];
     [rightBnt addTarget:self action:@selector(searchBit:) forControlEvents:UIControlEventTouchUpInside];
     [rightBnt sizeToFit];
     UIBarButtonItem * rightBntItem = [[UIBarButtonItem alloc]initWithCustomView:rightBnt];
@@ -463,15 +463,15 @@
         _tableView.frame = CGRectMake(0, ScreenHeight, ScreenWidth, ScreenHeight-106);
         _tableView.allowsSelection = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        if(@available(iOS 11.0, *)){
-            _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            _tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//导航栏如果使用系统原生半透明的，top设置为64
-            _tableView.scrollIndicatorInsets = _tableView.contentInset;
-
-        }else {
-
-
-        }
+//        if(@available(iOS 11.0, *)){
+//            _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//            _tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);//导航栏如果使用系统原生半透明的，top设置为64
+//            _tableView.scrollIndicatorInsets = _tableView.contentInset;
+//
+//        }else {
+//
+//
+//        }
     }
     return _tableView;
 }
